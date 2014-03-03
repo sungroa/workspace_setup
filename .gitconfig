@@ -1,0 +1,13 @@
+[user]
+	name = sungroa
+	email = sungroa@gmail.com
+[push]
+	default = simple
+[diff]
+	tool = vimdiff
+[merge]
+	tool = vimdiff
+	mergeoptions = --no-ff
+[core]
+	editor = vim
+	whitespace = warn
