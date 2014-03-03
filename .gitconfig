@@ -1,0 +1,20 @@
+[user]
+	name = sungroa
+	email = sungroa@gmail.com
+[push]
+	default = current
+	autosetupremote = true
+[diff]
+	tool = vimdiff
+[merge]
+	tool = vimdiff
+	mergeoptions = --no-ff
+[core]
+	editor = vim
+	whitespace = warn
+[pull]         
+  rebase = true
+[fetch]
+  prune = true
+[advice]
+	detachedhead = false
