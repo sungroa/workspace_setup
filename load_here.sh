@@ -3,7 +3,7 @@
 ls -A > temp_bash_dir
 while read myline
 do
-    if [ "$myline" != "load_here.sh" ] && [ "$myline" != "temp_bash_dir" ] && [ "$myline" != ".git" ]
+    if [ "$myline" != "load_here.sh" ] && [ "$myline" != "temp_bash_dir" ] && [ "$myline" != ".git" ] && [ "$myline" != "copy_out.sh" ]
     then
     cp ~/$myline .
     fi
