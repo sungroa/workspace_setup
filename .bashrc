@@ -11,3 +11,7 @@ set -o vi
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
+
+# don't put duplicate lines in the history. See bash(1) for more options
+# ... or force ignoredups and ignorespace
+HISTCONTROL=ignoredups:ignorespace
