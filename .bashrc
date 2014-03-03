@@ -15,3 +15,7 @@ fi
 # don't put duplicate lines in the history. See bash(1) for more options
 # ... or force ignoredups and ignorespace
 HISTCONTROL=ignoredups:ignorespace
+
+#Add colors to terminal
+export CLICOLOR=1
+export LSCOLORS=GxFxCxDxBxegedabagaced
