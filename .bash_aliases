@@ -1,2 +1,6 @@
-alias ls='ls --color=auto'
+computer_name=$(uname)
+if [[ "$computer_name" == "*Linux*" ]]
+then
+    alias ls='ls --color=auto'
+fi
 alias lsa='ls -A'
