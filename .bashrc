@@ -1,5 +1,5 @@
 #The information on the current location.
-export PS1="\n\[\e[0;36m\][\e[0m\]\[\e[0;31m\]\D{%r %A %D}\[\e[0m\] \[\e[0;35m\]\u@\H\e[0m\]\[\e[0;36m\]]\[\e[0m\]\n\[\e[0;32m\][\w]\$\[\e[0m\] "
+export PS1="\n\[\e[0;36m\][\[\e[0m\]\[\e[0;31m\]\D{%r %A %D}\[\e[0m\] \[\e[0;35m\]\u@\H\[\e[0m\]\[\e[0;36m\]]\[\e[0m\]\n\[\e[0;32m\][\w]\$\[\e[0m\] "
 
 #GREP with color views.
 export GREP_OPTIONS="-n --color"
