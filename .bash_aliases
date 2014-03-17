@@ -4,3 +4,5 @@ then
     alias ls='ls --color=auto'
 fi
 alias lsa='ls -A'
+
+alias go='gnome-open'
