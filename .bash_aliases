@@ -1,6 +1,6 @@
 #Update ls to make it more convenient
 computer_name=$(uname)
-if [[ "$computer_name" != "Darwin" ]]
+if [[ "$computer_name" == "Linux" ]]
 then
     alias ls='ls --color=auto'
 fi
