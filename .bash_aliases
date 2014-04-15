@@ -19,8 +19,8 @@ alias ta='ssh cs61c-tc@hive17.cs.berkeley.edu'
 
 #Alias for convenient cd commands.
 alias ..='cd ..'
-alias ...='cd ...'
-alias ....='cd ....'
+alias ...='cd ../..'
+alias ....='cd ../../..'
 alias cd..='cd ..'
 
 #Alias for viewing directory sizes.
