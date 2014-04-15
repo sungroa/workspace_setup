@@ -4,7 +4,7 @@ if [ $(uname -m) == $(uname -p) ]; then
 else
     unameinfo=$(uname -srmp)
 fi
-export PS1="\n\[\e[0;36m\][\\[\e[0;31m\]\D{%r %A %D} \[\e[0;35m\]\u@\h \[\e[0;33m\]$unameinfo\[\e[0;36m\]]\n\[\e[0;32m\][\w]\$\[\e[0m\] "
+export PS1="\n\[\e[0;36m\][\\[\e[0;31m\]\D{%r %A %D} \[\e[0;35m\]\u@\h \[\e[0;33m\]$unameinfo\[\e[0;36m\]]\n[\[\e[0;32m\]\w\[\e[0;36m\]]\n\$\[\e[0m\] "
 
 #GREP with color views.
 export GREP_OPTIONS="-n --color"
