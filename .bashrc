@@ -6,7 +6,7 @@ else
 fi
 
 export PS1="\n\[\e[0;36m\][\]\[\e[0;31m\]\D{%r %A %D}\] \[\e[0;35m\]\u@\h\] \[\e[0;33m\]$unameinfo\]\[\e[0;36m\]]\]"
-PS1="$PS1\n\[\e[0;36m\][\]\[\e[0;32m\] \w \[\e[0;36m\]]\]"
+PS1="$PS1\n\[\e[0;36m\][\]\[\e[0;32m\]\w\[\e[0;36m\]]\]"
 PS1="$PS1\n\[\e[0;36m\]\$\]\[\e[0m\] "
 
 #GREP with color views.
