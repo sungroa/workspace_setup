@@ -5,8 +5,15 @@ else
     unameinfo=$(uname -srmp)
 fi
 
-export PS1="\n\[\e[0;36m\][\]\[\e[0;31m\]\D{%r %A %D}\] \[\e[0;35m\]\u@\h\] \[\e[0;33m\]$unameinfo\]\[\e[0;36m\]]\]"
+#The date.
+export PS1="\n\[\e[0;36m\][\]\[\e[0;31m\]\D{%r %A %D}\] "
+#The user & host name info.
+PS1="$PS1\[\e[0;35m\]\u@\h\] "
+#The computer machine & version, as well as core info.
+PS1="$PS1\[\e[0;33m\]$unameinfo\]\[\e[0;36m\]]\]"
+#The work directory info.
 PS1="$PS1\n\[\e[0;36m\][\]\[\e[0;32m\]\w\[\e[0;36m\]]\]"
+#The actual bash.
 PS1="$PS1\n\[\e[0;36m\]\$\]\[\e[0m\] "
 
 #GREP with color views.
