@@ -3,6 +3,9 @@ computer_name=$(uname)
 if [[ "$computer_name" == "Linux" ]]
 then
     alias ls='ls --color=auto'
+elif [[ "$computer_name" == "Darwin" ]]
+then
+    alias ls='ls -G'
 fi
 alias lsa='ls -A'
 alias lsl='ls -hl'
