@@ -17,8 +17,6 @@ alias go='gnome-open'
 
 #Make alias for convenient ssh
 alias research='ssh sungroa@s141.millennium.berkeley.edu'
-alias class='ssh cs189-gg@hive17.cs.berkeley.edu'
-alias ta='ssh cs61c-tc@hive17.cs.berkeley.edu'
 
 #Alias for convenient cd commands.
 alias ..='cd ..'
