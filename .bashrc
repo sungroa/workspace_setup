@@ -1,3 +1,8 @@
+# Original bash rc files
+if [ -f ~/.bash_original_rc ]; then
+    . ~/.bash_original_rc
+fi
+
 #The information on the current location.
 if [ $(uname -m) == $(uname -p) ]; then
     unameinfo=$(uname -srm)
