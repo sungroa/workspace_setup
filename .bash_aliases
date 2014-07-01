@@ -15,9 +15,6 @@ alias sl='ls'
 #Make gnome-open for file opening more convenient for ubuntu
 alias go='gnome-open'
 
-#Make alias for convenient ssh
-alias research='ssh sungroa@s141.millennium.berkeley.edu'
-
 #Alias for convenient cd commands.
 alias ..='cd ..'
 alias ...='cd ../..'
