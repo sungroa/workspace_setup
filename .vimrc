@@ -13,8 +13,9 @@ set autoindent nocindent
 set ignorecase smartcase
 set formatoptions=croqlj
 filetype plugin indent on
+" Getting ctrlp stuff for easier file browsing.
+set runtimepath^=~/.vim/bundle/ctrlp.vim
 nnoremap <Leader>f :CtrlP %:h<CR>
 nnoremap <Leader>b :CtrlPBuffer<CR>
 nnoremap <Leader>m :CtrlPMRUFiles<CR>
-nnoremap <Leader>r :RelatedFilesWindow<CR>
 nnoremap yp :let @+ = expand("%")<CR>
