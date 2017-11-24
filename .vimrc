@@ -9,7 +9,11 @@ set statusline=%F%=%l-%c\ %P
 set mouse-=a
 set clipboard+=unnamed
 nmap <F2> :set invnumber<CR>
+nmap <F3> :set hlsearch!<CR>
 set autoindent nocindent
+set expandtab
+set shiftwidth=2
+set tabstop=2
 set ignorecase smartcase
 set formatoptions=croqlj
 filetype plugin indent on
