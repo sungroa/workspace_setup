@@ -1,4 +1,4 @@
-#Update ls to make it more convenient
+# Update ls to make it more convenient
 computer_name=$(uname)
 if [[ "$computer_name" == "Linux" ]]
 then
@@ -12,15 +12,16 @@ alias lsl='ls -hl'
 alias lsla='ls -Ahl'
 alias sl='ls'
 
-#Make gnome-open for file opening more convenient for ubuntu
+# Make gnome-open for file opening more convenient for ubuntu
 alias go='gnome-open'
 
-#Alias for convenient cd commands.
+# Alias for convenient cd commands.
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias cd..='cd ..'
+# Alias specifically for the Windows Terminal.
 alias cdh='cd /mnt/c/Users/Sung\ Roa\ Yoon/'
 
-#Alias for viewing directory sizes.
+# Alias for viewing directory sizes.
 alias d='du -d 1 -h'
