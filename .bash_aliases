@@ -20,6 +20,7 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias cd..='cd ..'
+alias cdh='cd /mnt/c/Users/Sung\ Roa\ Yoon/'
 
 #Alias for viewing directory sizes.
 alias d='du -d 1 -h'
