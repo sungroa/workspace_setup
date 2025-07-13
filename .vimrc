@@ -16,12 +16,7 @@ set tabstop=2
 set ignorecase smartcase
 set formatoptions=croqlj
 filetype plugin indent on
-" Getting ctrlp stuff for easier file browsing.
-" https://github.com/ctrlpvim/ctrlp.vim for instructions on setup.
-nnoremap <Leader>f :CtrlP %:h<CR>
-nnoremap <Leader>b :CtrlPBuffer<CR>
-nnoremap <Leader>m :CtrlPMRUFiles<CR>
-nnoremap yp :let @+ = expand("%")<CR>
+autocmd BufNewFile,BufRead .bash_common set filetype=sh
 fun! TrimWhitespace()
     let l:save = winsaveview()
     keeppatterns %s/\s\+$//e
