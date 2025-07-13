@@ -22,10 +22,10 @@ NEWLINE=$'\n'
 git_prompt_component() {
   local BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
   if [[ -n "${BRANCH}" ]]; then
-    echo " | %F{cyan}git:${BRANCH}%f"
+    echo "| %F{yellow}git:(${BRANCH})%f"
   fi
 }
-PS1='%F{blue}%n@%m%f | %F{red}%D{%Y-%m-%d (%A)} %t%f | %F{green}%~%f$(git_prompt_component)${NEWLINE}$ '
+PS1='${NEWLINE}%F{red}%D{%L:%M:%S %p %A %Y-%m-%d}%f | %F{5}%n@%m%f $(git_prompt_component)${NEWLINE}%F{green}%~%f${NEWLINE}$ '
 
 if [ -f ~/.bash_common ]; then
    source ~/.bash_common
