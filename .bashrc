@@ -20,11 +20,11 @@ else
 fi
 
 # The date.
-export PS1="\n\[\e[0;31m\]\D{%r %A %D} "
+export PS1="\n\[\e[0;31m\]\D{%r %A %Y-%m-%d}"
 # The user & host name info.
-PS1="$PS1\[\e[0;35m\]\u@\h "
+PS1="$PS1 \[\e[0;37m\]| \[\e[0;35m\]\u@\h"
 # Git repo branch.
-PS1="$PS1\[\e[0;33m\]\$(__git_ps1 'git:(%s)')"
+PS1="$PS1 \$(__git_ps1 '\[\e[0;37m\]| \[\e[0;33m\]git:(%s)')"
 # The work directory info.
 PS1="$PS1\n\[\e[0;32m\]\w/"
 # The actual bash.
