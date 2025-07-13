@@ -5,7 +5,7 @@ rm -rf ~/.backup_my_personal_settings
 mkdir ~/.backup_my_personal_settings
 while read myline
 do
-    if [[ ! "$myline" =~ ".swp" ]] && [[ ! "$myline" =~ ".sh" ]] && [ "$myline" != "temp_bash_dir" ] && [ "$myline" != "bash_history_cache" ] && [ "$myline" != ".git" ]
+    if [[ ! "$myline" =~ ".swp" ]] && [[ ! "$myline" =~ ".sh" ]] && [ "$myline" != "temp_bash_dir" ] && [ "$myline" != "bash_history_cache" ] && [ "$myline" != ".git" ] && [ "$myline" != ".gitignore" ]
     then
         echo "$myline"
         cp ~/$myline ~/.backup_my_personal_settings

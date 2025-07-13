@@ -25,7 +25,7 @@ git_prompt_component() {
     echo " | %F{cyan}git:${BRANCH}%f"
   fi
 }
-PS1='%F{blue}%n@%m%f | %F{red}%D{%Y-%m-%d (%A)}%t%f | %F{green}%~%f$(git_prompt_component)${NEWLINE}$ '
+PS1='%F{blue}%n@%m%f | %F{red}%D{%Y-%m-%d (%A)} %t%f | %F{green}%~%f$(git_prompt_component)${NEWLINE}$ '
 
 if [ -f ~/.bash_common ]; then
    source ~/.bash_common
