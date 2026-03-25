@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+# Fail on error, undefined vars, pipeline failures.
+set -euo pipefail
+
 case $(uname -s) in
   Darwin)
     ./setup_mac.sh
@@ -7,6 +11,6 @@ case $(uname -s) in
     ;;
   *)
     echo "Unsupported OS."
-    false
+    exit 1
     ;;
 esac
