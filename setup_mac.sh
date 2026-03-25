@@ -9,4 +9,4 @@ echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "${HOME}/.zprofile"
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
 brew update
-brew install tmux vim fonttool withgraphite/tap/graphite
+brew install tmux vim stow fonttool withgraphite/tap/graphite

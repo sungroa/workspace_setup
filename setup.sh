@@ -14,3 +14,5 @@ case $(uname -s) in
     exit 1
     ;;
 esac
+
+stow -v -t ~ home
