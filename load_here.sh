@@ -1,15 +1,26 @@
-#!/bin/bash
-#Loads all the appropriate files into this repo.
-ls -A > temp_bash_dir
-rm -rf ~/.backup_my_personal_settings
-mkdir ~/.backup_my_personal_settings
-while read myline
-do
-    if [[ ! "$myline" =~ ".swp" ]] && [[ ! "$myline" =~ ".sh" ]] && [ "$myline" != "temp_bash_dir" ] && [ "$myline" != "bash_history_cache" ] && [ "$myline" != ".git" ] && [ "$myline" != ".gitignore" ]
-    then
-        cp $myline ~/.backup_my_personal_settings
-        cp ~/$myline .
-    fi
-done < "temp_bash_dir"
+#!/usr/bin/env bash
+# Fail on error, undefined variables, and pipeline failures.
+set -euo pipefail
 
-rm -rf temp_bash_dir
+# Loads all the appropriate files into this repo from ~.
+rm -rf ~/.backup_my_personal_settings
+mkdir -p ~/.backup_my_personal_settings
+
+# shopt -s dotglob ensures * matches hidden files (dotfiles) too.
+shopt -s dotglob
+for file in *; do
+    # Skip directories and specific files we don't want to load over.
+    if [[ "$file" == ".git" ]] || [[ "$file" == ".gitignore" ]] || \
+       [[ "$file" == *.swp ]] || [[ "$file" == *.sh ]] || \
+       [[ "$file" == "bash_history_cache" ]]; then
+        continue
+    fi
+    
+    # Backup the current file in the repo before overwriting it.
+    if [[ -e "$file" ]]; then
+        cp -a "$file" ~/.backup_my_personal_settings/
+    fi
+
+    echo "Loading $file from $HOME"
+    cp -a "$HOME/$file" .
+done
