@@ -5,6 +5,8 @@ sudo apt upgrade -y
 sudo apt autoremove -y
 # To get basic settings in the terminal.
 sudo apt install tmux vim fonts-noto -y
+# To set python3 as the default.
+sudo apt install python-is-python3
 # To get npm and graphite.
 sudo apt install npm -y
 sudo npm install -g n
