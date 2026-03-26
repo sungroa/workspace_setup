@@ -2,11 +2,23 @@
 # Fail on error, undefined vars, pipeline failures.
 set -euo pipefail
 
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-echo >> "${HOME}/.zprofile"
-echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "${HOME}/.zprofile"
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# Dynamically set brew path based on architecture
+if [[ -x /opt/homebrew/bin/brew ]]; then
+    BREW_CMD="/opt/homebrew/bin/brew"
+elif [[ -x /usr/local/bin/brew ]]; then
+    BREW_CMD="/usr/local/bin/brew"
+else
+    echo "Homebrew not found!"
+    exit 1
+fi
+
+if ! grep -q "brew shellenv" "${HOME}/.zprofile" 2>/dev/null; then
+    echo >> "${HOME}/.zprofile"
+    echo "eval \"\$($BREW_CMD shellenv)\"" >> "${HOME}/.zprofile"
+fi
+eval "$($BREW_CMD shellenv)"
 
 brew update
-brew install tmux vim stow fonttool withgraphite/tap/graphite
+brew install tmux vim stow fonttool keychain withgraphite/tap/graphite
