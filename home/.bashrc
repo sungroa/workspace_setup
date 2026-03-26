@@ -4,7 +4,8 @@ case $- in
       *) return;;
 esac
 
-# Append to the history file, don't overwrite it
+# Append to the history file, don't overwrite it.
+# Essential for preserving commands across multiple concurrent terminal sessions.
 shopt -s histappend
 
 HISTSIZE=-1
@@ -12,7 +13,8 @@ HISTFILESIZE=-1
 HISTCONTROL=ignoreboth
 
 # Check the window size after each command and, if necessary,
-# Update the values of LINES and COLUMNS.
+# update the values of LINES and COLUMNS variable values globally.
+# This prevents wrapping display bugs after resizing the terminal emulator.
 shopt -s checkwinsize
 
 # Enable programmable completion features
@@ -36,10 +38,12 @@ if type -t __git_ps1 >/dev/null; then
 fi
 # The work directory info.
 PS1="$PS1\n\[\e[0;32m\]\w/"
-# The actual bash.
+# The actual bash prompt symbol.
 PS1="$PS1\n\[\e[0;36m\]\$\[\e[0m\] "
 
-# Added to give ssh access to my git repos.
+# Added to give ssh access to my git repos seamlessly.
+# Keychain manages the ssh-agent instance per-system rather than per-shell, 
+# asking for passphrase only once upon reboot.
 if command -v keychain &> /dev/null; then
     eval "$(keychain --eval github_ssh_key -q)"
 fi

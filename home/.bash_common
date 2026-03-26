@@ -1,9 +1,9 @@
-# make less more friendly for non-text input files, see lesspipe(1)
-
-# make less more friendly for non-text input files, see lesspipe(1)
+# make less more friendly for non-text input files, see lesspipe(1).
+# Lesspipe provides intelligent text rendering when using `less` on binary files or archives.
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# Enable color support of ls and also add handy aliases
+# Enable color support of ls and also add handy aliases.
+# `dircolors` configures semantic color values based on file types mimicking modern term capabilities.
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
@@ -19,10 +19,13 @@ if [ -f ~/.bash_aliases ]; then
 fi
 
 # Vi style prompt input
+# Enables modal editing directly on the command line for vim power-users.
 set -o vi
 
 # Done to make Windows connect to XMing Display Environment correctly.
-# Only set it if it isn't already set (e.g., dynamically by WSLg or Wayland)
+# Map DISPLAY to the local Windows machine's X-Server.
+# Only set it if it isn't already dynamically provided (e.g., organically by WSLg or Wayland)
+# to avoid breaking modern GUI integrations.
 if [ -z "$DISPLAY" ]; then
     export DISPLAY=:0
 fi
