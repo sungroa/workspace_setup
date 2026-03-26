@@ -1,8 +1,4 @@
-# If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
+# make less more friendly for non-text input files, see lesspipe(1)
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -30,4 +26,7 @@ fi
 set -o vi
 
 # Done to make Windows connect to XMing Display Environment correctly.
-export DISPLAY=:0
+# Only set it if it isn't already set (e.g., dynamically by WSLg or Wayland)
+if [ -z "$DISPLAY" ]; then
+    export DISPLAY=:0
+fi

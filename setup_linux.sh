@@ -8,7 +8,11 @@ sudo apt upgrade -y
 sudo apt autoremove -y
 
 # To get basic settings in the terminal.
-sudo apt install tmux vim fonts-noto stow -y
+sudo apt install tmux vim fonts-noto fonts-noto-color-emoji fonts-powerline stow locales bash-completion git -y
+
+# Configure locale to avoid broken ascii/formatting
+sudo locale-gen en_US.UTF-8
+sudo update-locale LANG=en_US.UTF-8
 
 # To set python3 as the default.
 sudo apt install python-is-python3 -y
