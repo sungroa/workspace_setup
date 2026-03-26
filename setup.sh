@@ -21,7 +21,9 @@ esac
 # We iterate over everything in the home/ directory (the stow source) 
 # to proactively move any existing real files in $HOME out of the way. 
 # GNU Stow will fail if it tries to symlink over a real file, so this ensures idempotency.
-for f in $(ls -A home); do
+shopt -s dotglob nullglob
+for filepath in home/*; do
+  f=$(basename "$filepath")
   if [ -e "$HOME/$f" ] && [ ! -L "$HOME/$f" ]; then
     echo "Backing up $HOME/$f to $HOME/$f.bak"
     mv "$HOME/$f" "$HOME/$f.bak"

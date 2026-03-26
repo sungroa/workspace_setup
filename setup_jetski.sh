@@ -17,21 +17,18 @@ mkdir -p "$GLOBAL_AGENT_DIR"
 
 # Iterate over all skills in this repo and symlink them directly into the global directory.
 # This approach avoids duplicating files, so updates to the repo directly reflect in the global agent pool.
+shopt -s nullglob
 for skill_path in "$SKILLS_SRC"/*; do
     if [ -d "$skill_path" ]; then
         skill_name=$(basename "$skill_path")
         target_path="${GLOBAL_AGENT_DIR}/${skill_name}"
         
-        # Remove existing symlink or folder safely to avoid `ln` errors or stow conflicts.
-        # This provides idempotency so the script can be rerun without failure.
-        if [ -e "$target_path" ] || [ -L "$target_path" ]; then
-            rm -rf "$target_path"
-        fi
-        
-        # Create exact symbolic link back to the repo logic.
-        ln -s "$skill_path" "$target_path"
+        # Create exact symbolic link back to the repo logic atomically.
+        # -sfn allows atomic replacement if symlink/directory already exists.
+        ln -sfn "$skill_path" "$target_path"
         echo "✅ Linked skill: ${skill_name} -> ${target_path}"
     fi
 done
+shopt -u nullglob
 
 echo "Done! Jetski will now ingest these skills by default on startup."
