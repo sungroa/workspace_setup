@@ -1,3 +1,6 @@
+# If not running interactively, don't do anything
+[[ $- == *i* ]] || return
+
 setopt APPEND_HISTORY            # Write to the history file when the shell exits.
 setopt BANG_HIST                 # Treat the '!' character specially during expansion.
 setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format.
@@ -20,6 +23,7 @@ bindkey '^R' history-incremental-search-backward
 
 NEWLINE=$'\n'
 git_prompt_component() {
+  if ! command -v git &> /dev/null; then return; fi
   local BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
   if [[ -n "${BRANCH}" ]]; then
     echo "| %F{yellow}git:(${BRANCH})%f"
