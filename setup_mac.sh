@@ -24,14 +24,12 @@ fi
 # Idempotently add homebrew to the PATH for login shells.
 # We append to both .zprofile (for zsh) and .bash_profile (for bash users)
 # only if the shellenv initialization does not already exist.
-if ! grep -q "brew shellenv" "${HOME}/.zprofile" 2>/dev/null; then
-    echo >> "${HOME}/.zprofile"
-    echo "eval \"\$($BREW_CMD shellenv)\"" >> "${HOME}/.zprofile"
-fi
-if ! grep -q "brew shellenv" "${HOME}/.bash_profile" 2>/dev/null; then
-    echo >> "${HOME}/.bash_profile"
-    echo "eval \"\$($BREW_CMD shellenv)\"" >> "${HOME}/.bash_profile"
-fi
+for profile in "${HOME}/.zprofile" "${HOME}/.bash_profile"; do
+    if ! grep -q "brew shellenv" "$profile" 2>/dev/null; then
+        echo >> "$profile"
+        echo "eval \"\$($BREW_CMD shellenv)\"" >> "$profile"
+    fi
+done
 eval "$($BREW_CMD shellenv)"
 
 # Ensure recipes are latest and install required tools.

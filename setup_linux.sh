@@ -2,13 +2,16 @@
 # Fail on error, undefined vars, pipeline failures to prevent partial execution.
 set -euo pipefail
 
+# Export DEBIAN_FRONTEND to prevent prompts during automated installation
+export DEBIAN_FRONTEND=noninteractive
+
 # System upgrades.
-sudo apt update -y
-sudo apt upgrade -y
-sudo apt autoremove -y
+sudo -E apt-get update -y
+sudo -E apt-get upgrade -y
+sudo -E apt-get autoremove -y
 
 # To get basic settings and terminal enhancements.
-sudo apt install tmux vim fonts-noto fonts-noto-color-emoji fonts-powerline stow locales bash-completion git -y
+sudo -E apt-get install --no-install-recommends -y tmux vim fonts-noto fonts-noto-color-emoji fonts-powerline stow locales bash-completion git
 
 # Configure locale to ensure character encoding support.
 # Failing to generate en_US UTF-8 can result in broken terminal UI/ascii formatting.
@@ -16,10 +19,10 @@ sudo locale-gen en_US.UTF-8
 sudo update-locale LANG=en_US.UTF-8
 
 # Alias python to python3 by default, aligning with modern python standards.
-sudo apt install python-is-python3 -y
+sudo -E apt-get install --no-install-recommends -y python-is-python3
 
 # Node installation via NVM equivalent ('n').
-sudo apt install npm -y
+sudo -E apt-get install --no-install-recommends -y npm
 sudo npm install -g n
 sudo n lts
 sudo n prune
@@ -30,4 +33,4 @@ hash -r
 sudo npm i -g @withgraphite/graphite-cli
 
 # To setup ssh into the device and cleanly manage auth agents.
-sudo apt install keychain openssh-server -y
+sudo -E apt-get install --no-install-recommends -y keychain openssh-server
