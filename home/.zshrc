@@ -1,10 +1,10 @@
 # If not running interactively, don't do anything
 [[ $- == *i* ]] || return
 
-setopt APPEND_HISTORY            # Write to the history file when the shell exits.
-setopt BANG_HIST                 # Treat the '!' character specially during expansion.
-setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format.
-setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
+setopt APPEND_HISTORY            # Write to the history file when the shell exits instead of overwriting.
+setopt BANG_HIST                 # Treat the '!' character specially during expansion for history playback.
+setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format for profiling.
+setopt INC_APPEND_HISTORY        # Write to the history file immediately, preserving entries even if the shell crashes.
 setopt HIST_EXPIRE_DUPS_FIRST    # Expire duplicate entries first when trimming history.
 setopt HIST_IGNORE_DUPS          # Don't record an entry that was just recorded again.
 setopt HIST_IGNORE_ALL_DUPS      # Delete old recorded entry if new entry is a duplicate.
@@ -18,7 +18,9 @@ HISTSIZE=10000
 HISTFILESIZE=1000000
 SAVEHIST=$HISTFILESIZE
 
+# Enable vi-mode keybindings for structural text editing on the prompt.
 bindkey -v
+# Map Ctrl-R explicitly to standard backward incremental search, overriding vi-mode default behavior.
 bindkey '^R' history-incremental-search-backward
 
 NEWLINE=$'\n'
