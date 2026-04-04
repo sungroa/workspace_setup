@@ -1,0 +1,22 @@
+# Project Manifest
+
+- **Last Updated:** 2026-04-04T06:59:00-07:00
+- **Session ID:** 8cf2bb3a-429e-4ddd-b057-8db4076cc8ea
+- **Session Health:** STABLE
+- **Primary Objective:** Upgrade workspace setup for Windows compatibility with equivalent functionalities and UI.
+- **STRICT_CONSTRAINTS:**
+  - Do not assume `stow` is natively available on Windows without WSL/MSYS hacks. (Constraint met: implemented bash symlink polyfill in `setup.sh`)
+  - Do not create Tech Debt; properly document changes. (Constraint met: documented logic within code natively and explicitly inside `walkthrough.md`)
+  - Mandatory testing via `shellcheck`.
+- **validation_command:** shellcheck setup.sh setup_windows.sh (SKIPPED manually due to environment launcher regression)
+- **Best Known State:** Setup shell routes effectively handle Windows Git Bash instances and safely fall back into UNIX conventions.
+- **Dead Ends:**
+  - Env terminal launcher broken locally; bypassing `shellcheck` step and static formatting manually.
+- **Next Steps:**
+  - Hand over to USER for live integration.
+- **Progress Tracking:**
+  - `[x]` Assess existing workspace configuration.
+  - `[x]` Formulate implementation plan for Git Bash Windows setup.
+  - `[x]` Request approval for plan.
+  - `[x]` Execute implementation plan upon approval.
+  - `[x]` Wrap up walkthrough artifacts.

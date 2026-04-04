@@ -5,14 +5,17 @@ set -euo pipefail
 
 # Delegate to the appropriate OS-specific setup script based on the kernel name.
 case $(uname -s) in
-  Darwin)
+  Darwin*)
     ./setup_mac.sh
     ;;
-  Linux)
+  Linux*)
     ./setup_linux.sh
     ;;
+  MINGW*|MSYS*|CYGWIN*)
+    ./setup_windows.sh
+    ;;
   *)
-    echo "Unsupported OS."
+    echo "Unsupported OS: $(uname -s)"
     exit 1
     ;;
 esac
@@ -43,4 +46,15 @@ fi
 
 # Finally, leverage GNU Stow to create symbolic links from the `home/` directory
 # directly into the user's home directory (`~`).
-stow -v -t ~ home
+# If stow is not natively available (common on Windows without specific builds),
+# we fall back to standard `ln -snf` logic to achieve parity.
+if command -v stow &> /dev/null; then
+  stow -v -t ~ home
+else
+  echo "GNU Stow not found! Using standard 'ln -snf' fallback..."
+  for filepath in home/*; do
+    f=$(basename "$filepath")
+    ln -snf "$(pwd)/home/$f" "$HOME/$f"
+    echo "Linked $HOME/$f -> $(pwd)/home/$f"
+  done
+fi
