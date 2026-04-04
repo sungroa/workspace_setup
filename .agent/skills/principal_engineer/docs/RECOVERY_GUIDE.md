@@ -32,3 +32,12 @@ When `fast_validation_command` indicates `DEGRADED` health after a feature addit
 2. Immediately restore the files modified in this specific Turn to their previous state via standard `git checkout` or by manually reverting via `replace_file_content`.
 3. Re-run `fast_validation_command`. 
 4. Once `STABLE` is restored, re-attempt the feature via an alternate route.
+
+## 5. Validation Fatigue & Environmental Escapes
+
+If the `fast_validation_command` fails but you are 100% certain the failure is unrelated to your current changes (e.g., a pre-existing lint error in a distant file or a missing system dependency):
+
+1. **Baseline the Failure**: Run the validation command on a clean state (or via `git checkout`) to confirm it fails independently of your work.
+2. **Document in Manifest**: Update `Session Health` to `DEGRADED` in the manifest and explicitly list the "Baseline Failure" in the `Best Known State` section.
+3. **Avoid the Loop**: Do **NOT** attempt to fix pre-existing, out-of-scope errors unless they directly block your primary goal. Proceed with your task while monitoring that your changes do not introduce *new* failures.
+4. **Alert the User**: Inform the user that you are operating in a `DEGRADED` environment and why.

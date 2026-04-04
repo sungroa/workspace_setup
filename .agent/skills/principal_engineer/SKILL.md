@@ -13,20 +13,29 @@ Deliver industrial-grade solutions:
 - **Clean Architecture**: Adhere to SOLID principles and standard design patterns.
 - **Mandatory Testing**: NEVER consider a feature complete without passing tests. If production logic changes, a test file MUST be added/updated in the same turn. One-off scripts, configurations, and documentation are exempt. No tests for features = Incomplete.
 - **VCS & Self-Documentation**: Commit often with clear messages. Every new module MUST have standard docstrings. Update `README.md` for architectural shifts.
-- **Manifest Integrity**: The manifest is read at **every** Turn-Start and updated at **every** Turn-End — no exceptions.
+- **Manifest Integrity**: The manifest is read at **every** Turn-Start and updated at **every** Mutation Turn-End — no exceptions for state changes.
 
 ## 1. Lifecycle & Manifest Management
 
 > **Turn Definition**: A 'Turn' is defined as a full cycle of thought and autonomous execution that ends *only* when control is finally yielded back to the USER. Do not over-trigger Turn protocols during internal multi-step tool loops. 'Turn-Start' means before making the very first tool call in a new cycle. 'Turn-End' means right before generating the final text response to the user.
 
 **Turn-Start Protocol (MANDATORY):** At the start of **every turn**, before any other tools:
-1. Search for `.agent/project_manifest.md` starting from the **workspace root** — defined as the closest ancestor directory containing `.git` relative to CWD (not CWD itself). In monorepos with multiple `.git` roots, prefer the closest one. Do NOT create duplicate manifests.
-2. If found, read it immediately and run the `fast_validation_command` (a field in `Best Known State`, e.g., standard linter or targeted unit test). Do NOT run heavy, full test suites at every Turn-Start. If it fails or `validation_status` is `UNKNOWN` or `STALE`, **attempt to restore the project to a passing state before beginning feature work**. (Note: If the failure is an existing, entrenched environmental issue explicitly outside the requested scope, document the baseline failure in the manifest and proceed, avoiding blocked loops).
-3. If not found, create one immediately using `skills/principal_engineer/docs/MANIFEST_TEMPLATE.md`. If the template is also missing, create a minimal manifest from scratch with these required fields: `Last Updated`, `Session ID`, `Session Health`, `STRICT_CONSTRAINTS`, `Primary Objective`, `fast_validation_command`, `full_validation_command`, `Next Steps`.
+1. **Locate Manifest**: If the path to `.agent/project_manifest.md` is already known from a previous turn, use it directly. Otherwise, search starting from the **workspace root** — defined as the closest ancestor directory containing `.git` relative to CWD. In monorepos, prefer the closest `.git`. Do NOT create duplicate manifests.
+2. **Read & Validate**: Read the manifest. Run the `fast_validation_command` **ONLY IF**:
+   - The previous turn resulted in a state mutation (file write/command).
+   - OR `Session Health` is currently `DEGRADED` or `UNKNOWN`.
+   - OR this is the first turn of the session.
+   If validation fails, **attempt to restore the project to a passing state before beginning feature work**. (Note: If the failure is an existing environmental issue explicitly outside scope, document it and proceed).
+3. **Template Fallback**: If no manifest exists, create one using `skills/principal_engineer/docs/MANIFEST_TEMPLATE.md`.
 
-**Turn-End Protocol (MANDATORY):** Before yielding control, always:
-1. Update `project_manifest.md` to reflect the new state.
-2. Ensure `Next Steps` and `Progress Tracking` are current. No stale fields.
+**Turn-End Protocol (MANDATORY):** Before yielding control:
+1. **Assess Turn Tier**:
+   - **Investigation Tier**: Turn involved only `view_file`, `list_dir`, `grep_search`, or read-only commands.
+   - **Mutation Tier**: Turn involved `write_to_file`, `replace_file_content`, or commands that modify state/running processes.
+2. **Conditional Update**:
+   - For **Mutation Tier**: Update `project_manifest.md` with new `Next Steps`, `Progress Tracking`, and `Best Known State`.
+   - For **Investigation Tier**: You may skip manifest updates unless `Next Steps` have significantly changed.
+3. **Context Budget**: ALWAYS estimate and log the `Context Budget` in the manifest if any significant tools were used, even in Investigation Tier.
 
 **Manifest Rules**:
 - **Session ID**: Always include the current Session/Conversation ID at the top.
