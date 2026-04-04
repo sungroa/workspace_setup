@@ -1,22 +1,24 @@
 # Project Manifest
 
-- **Last Updated:** 2026-04-04T06:59:00-07:00
-- **Session ID:** 8cf2bb3a-429e-4ddd-b057-8db4076cc8ea
+- **Last Updated:** 2026-04-04T07:22:00-07:00
+- **Session ID:** a3a8d934-1b00-4316-995f-f9c2f23e9fcc
 - **Session Health:** STABLE
-- **Primary Objective:** Upgrade workspace setup for Windows compatibility with equivalent functionalities and UI.
+- **Context Budget:** ~5% (Turn 1)
+- **Primary Objective:** Maintain and enhance workspace setup automation and agent skill framework.
 - **STRICT_CONSTRAINTS:**
-  - Do not assume `stow` is natively available on Windows without WSL/MSYS hacks. (Constraint met: implemented bash symlink polyfill in `setup.sh`)
-  - Do not create Tech Debt; properly document changes. (Constraint met: documented logic within code natively and explicitly inside `walkthrough.md`)
+  - Do not assume `stow` is natively available on Windows without WSL/MSYS hacks.
+  - Do not create Tech Debt; properly document changes.
   - Mandatory testing via `shellcheck`.
-- **validation_command:** shellcheck setup.sh setup_windows.sh (SKIPPED manually due to environment launcher regression)
-- **Best Known State:** Setup shell routes effectively handle Windows Git Bash instances and safely fall back into UNIX conventions.
+- **fast_validation_command:** shellcheck setup.sh setup_windows.sh (SKIPPED — environment launcher regression)
+- **full_validation_command:** shellcheck setup.sh setup_windows.sh && ./setup.sh --dry-run
+- **Best Known State:** Setup shell routes effectively handle Windows Git Bash instances and safely fall back into UNIX conventions. Principal engineer skill now includes context budget tracking and thread handoff protocol (§3).
 - **Dead Ends:**
   - Env terminal launcher broken locally; bypassing `shellcheck` step and static formatting manually.
 - **Next Steps:**
-  - Hand over to USER for live integration.
+  - User live integration testing of workspace setup scripts.
+  - Consider creating the referenced `MANIFEST_TEMPLATE.md` and `RECOVERY_GUIDE.md` doc stubs under `.agent/skills/principal_engineer/docs/`.
 - **Progress Tracking:**
   - `[x]` Assess existing workspace configuration.
   - `[x]` Formulate implementation plan for Git Bash Windows setup.
-  - `[x]` Request approval for plan.
-  - `[x]` Execute implementation plan upon approval.
-  - `[x]` Wrap up walkthrough artifacts.
+  - `[x]` Execute Windows setup implementation.
+  - `[x]` Upgrade principal engineer skill with context budget & handoff protocol (§3).
