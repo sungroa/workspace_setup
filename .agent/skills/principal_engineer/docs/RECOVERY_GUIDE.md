@@ -7,9 +7,12 @@
 A subagent is considered "stalled" if you poll its status and it remains `running` over multiple extended periods with zero new output, or if it asks infinite clarification questions without making progress.
 
 **Action Steps:**
-1. **Terminate**: Halt the stalled subagent immediately to prevent token bloat.
-2. **Diagnose**: Check the last known tool output. Was it waiting for user input? Did it encounter an interactive prompt (e.g., `Do you want to continue? [Y/n]`)?
-3. **Relaunch with Constraints**: Start a new subagent with *highly targeted* instructions. Include specific commands to bypass interactive prompts (e.g., use `-y` or `yes |`).
+1. **Heartbeat Check (Silent Execution Detection)**: Before termination, attempt to verify if the subagent is executing without providing terminal feedback. Instruct the subagent to output its current status to a confirmed writable location within the workspace (e.g., `write_to_file` a timestamp to `.agent/subagent_status.txt`). Check this file via `view_file`.
+   - **If File Exists/Updated**: The subagent is alive but "blind" or non-reporting. Adjust your next instructions to mandate file-based status updates.
+   - **If No File/No Update**: Proceed to termination.
+2. **Terminate**: Halt the stalled subagent immediately to prevent token bloat.
+3. **Diagnose**: Check the last known tool output. Was it waiting for user input? Did it encounter an interactive prompt (e.g., `Do you want to continue? [Y/n]`)?
+4. **Relaunch with Constraints**: Start a new subagent with *highly targeted* instructions. Include specific commands to bypass interactive prompts (e.g., use `-y` or `yes |`).
 
 ## 2. The 3-Strike "Dead End" Rule
 
