@@ -1,4 +1,15 @@
 #!/usr/bin/env bash
+# ==============================================================================
+# setup_windows.sh - Windows (Git Bash/Winget) Provisioning Logic
+# ==============================================================================
+# This script manages Windows environments via Git Bash.
+# It uses 'winget.exe' (Windows Package Manager) to install core utilities.
+# Key features:
+# 1. Detects winget availability inside the shell environment.
+# 2. Performs idempotent installations of core apps (Git, Vim, Node, Python).
+# 3. Synchronizes the Windows Registry PATH back into the bash environment.
+# ==============================================================================
+
 # Fail on error, undefined vars, pipeline failures.
 set -euo pipefail
 
@@ -12,8 +23,7 @@ fi
 
 echo "Installing core utilities and runtimes..."
 # Idempotent installation strictly without prompts.
-# We capture the exit code from `winget list` to avoid set -e aborting
-# on network errors (which also return non-zero).
+# We iterate over a list of core packages and use versions.json if available.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 VERSIONS_FILE="${SCRIPT_DIR}/versions.json"
 
@@ -43,10 +53,13 @@ for package in "Git.Git" "Vim.Vim" "OpenJS.NodeJS.LTS" "Python.Python.3.11" "Mic
 done
 
 echo "Refreshing PATH to detect newly installed tools..."
-# Extract the combined Machine/User PATH from the Windows registry via PowerShell.
-# We join them with a semicolon and then let 'cygpath' convert the entire string to Unix format.
+# Critical Step: Windows installations (like Node or Python) update the Registry PATH,
+# but those changes aren't automatically visible in the current Git Bash session.
+# We manually pull the 'Machine' and 'User' PATHs using PowerShell and convert them.
 RAW_PATH=$(powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "[Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' + [Environment]::GetEnvironmentVariable('Path', 'User')" | tr -d '\r')
-# Convert the semicolon-separated Windows path to a colon-separated Unix path.
+
+# Convert the semicolon-separated Windows path string (C:\...) to 
+# a colon-separated Unix path string (/c/...) using 'cygpath'.
 export PATH=$(cygpath -u -p "$RAW_PATH")
 
 echo "Installing Node utilities..."

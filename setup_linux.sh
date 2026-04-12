@@ -1,8 +1,20 @@
 #!/usr/bin/env bash
+# ==============================================================================
+# setup_linux.sh - Linux Provisioning Logic
+# ==============================================================================
+# This script handles package management for major Linux distributions:
+# - Debian/Ubuntu/Mint (apt)
+# - Fedora/CentOS/RHEL (dnf)
+# - Arch/Manjaro (pacman)
+#
+# It manages system updates, dependencies, locale configuration, and
+# Node.js runtime environments (via 'n').
+# ==============================================================================
+
 # Fail on error, undefined vars, pipeline failures to prevent partial execution.
 set -euo pipefail
 
-# Detect package manager
+# Detect available package manager to support multiple distributions.
 if command -v apt-get &> /dev/null; then
     PM="apt-get"
 elif command -v dnf &> /dev/null; then
@@ -54,9 +66,15 @@ if ! command -v jq &> /dev/null; then
     pkg_install jq
 fi
 
-# Load versions from unified JSON
+# Load pinned versions from the unified JSON file to ensure environment consistency.
+# If versions.json is missing, the script falls back to installing the 'latest' package.
 VERSIONS_FILE="${SCRIPT_DIR}/versions.json"
 
+# Helper function to resolve package names with pinned versions.
+# Standardizes the pinning syntax for different package managers:
+# apt: pkg=version
+# dnf: pkg-version
+# pacman: pkg (Latest only, as pacman pinning is discouraged)
 get_pkg() {
     local base_pkg=$1
     local section=""
@@ -72,14 +90,16 @@ get_pkg() {
     fi
 
     local version
+    # Use jq to extract the pinned version for the current package manager.
     version=$(jq -r ".linux.${section}[\"${base_pkg}\"] // empty" "$VERSIONS_FILE")
     if [ -n "$version" ]; then
         case "$PM" in
             apt-get) echo "${base_pkg}=${version}" ;;
             dnf) echo "${base_pkg}-${version}" ;;
-            pacman) echo "${base_pkg}" ;; # Pacman pinning discouraged; using latest
+            pacman) echo "${base_pkg}" ;; 
         esac
     else
+        # Fallback to base package name if no pin is found.
         echo "${base_pkg}"
     fi
 }
@@ -109,7 +129,8 @@ if [ "$PM" == "apt-get" ]; then
     sudo update-locale LANG=en_US.UTF-8
 fi
 
-# Node installation via NPM/N
+# Node.js installation via NPM/N.
+# We use 'n' to manage Node versions because it's lightweight and works well in scripts.
 if [ "$PM" == "apt-get" ]; then
     pkg_install "$(get_pkg python-is-python3)" "$(get_pkg npm)"
 else
@@ -117,17 +138,21 @@ else
     pkg_install "$(get_pkg npm)" "$(get_pkg python3)"
 fi
 
+# Configure 'n' to install Node in a user-local directory (~/.n)
+# to avoid permission issues and keep the system clean.
 export N_PREFIX="$HOME/.n"
 mkdir -p "$N_PREFIX"
 npm config set prefix "$N_PREFIX"
 npm install -g n
-n lts
-n prune
-hash -r
+n lts             # Install the Long Term Support (LTS) version
+n prune           # Remove old cached versions
+hash -r           # Refresh command hash table
 export PATH="$N_PREFIX/bin:$PATH"
+
+# Install modern developer CLI tools
 npm i -g @withgraphite/graphite-cli@1.x.x
 
-# SSH Tools
+# SSH and Remote Access Tools
 SSH_PKGS=("$(get_pkg keychain)")
 if [ "$PM" == "apt-get" ]; then
     SSH_PKGS+=("$(get_pkg openssh-server)")

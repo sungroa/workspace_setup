@@ -1,4 +1,16 @@
 #!/usr/bin/env bash
+# ==============================================================================
+# setup.sh - Primary Workspace Entry Point
+# ==============================================================================
+# This script coordinates the tiered installation process:
+# 1. Detects the operating system (Linux, macOS, Windows).
+# 2. Delegates to OS-specific drivers for package/runtime installation.
+# 3. Performs pre-emptive backups of existing dotfiles to prevent collisions.
+# 4. Deploys dotfiles using GNU Stow (or a symlink fallback).
+#
+# Usage: ./setup.sh [--upgrade] [--dry-run]
+# ==============================================================================
+
 # Fail on error, undefined vars, pipeline failures to prevent partial/broken execution.
 # This ensures fail-fast behavior.
 set -euo pipefail
@@ -8,7 +20,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Dry-run mode: validate the script can parse and detect the OS without mutating state.
-# Referenced by the manifest's full_validation_command.
+# Used by CI pipelines and the project manifest's validation commands.
 if [[ "${1:-}" == "--dry-run" ]]; then
   echo "[dry-run] OS detected: $(uname -s)"
   echo "[dry-run] Script directory: ${SCRIPT_DIR}"

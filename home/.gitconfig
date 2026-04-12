@@ -1,3 +1,6 @@
+# Managed by workspace_setup repository.
+# Global Git configuration.
+
 [user]
 	name = sungroa
 	email = sungroa@gmail.com

@@ -1,3 +1,6 @@
+# Managed by workspace_setup repository.
+# Main login configuration for the Bash shell.
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;

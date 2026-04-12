@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
+# ==============================================================================
+# update_homebrew_pin.sh - macOS Homebrew Security Pinning Tool
+# ==============================================================================
+# This script updates the Homebrew installer commit and SHA256 sum in 
+# versions.json. It ensures that the macOS setup process always uses a 
+# verified and trusted version of the Homebrew installer.
+#
+# Requirements: git, curl, shasum, jq.
+# Usage: ./update_homebrew_pin.sh
+# ==============================================================================
+
 set -euo pipefail
 
+# Locate the versions.json file.
 VERSIONS_FILE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/versions.json"
 
 if [ ! -f "$VERSIONS_FILE" ]; then
@@ -8,7 +20,8 @@ if [ ! -f "$VERSIONS_FILE" ]; then
     exit 1
 fi
 
-echo "Fetching latest Homebrew installer commit..."
+echo "Fetching latest Homebrew installer commit from GitHub..."
+# Resolve the latest HEAD commit hash from the official Homebrew repository.
 COMMIT=$(git ls-remote https://github.com/Homebrew/install.git HEAD | awk '{print $1}')
 if [ -z "$COMMIT" ]; then
     echo "Failed to fetch commit."
@@ -16,7 +29,8 @@ if [ -z "$COMMIT" ]; then
 fi
 
 URL="https://raw.githubusercontent.com/Homebrew/install/${COMMIT}/install.sh"
-echo "Fetching installer script to compute SHA256..."
+echo "Fetching installer script to compute SHA256 checksum..."
+# Stream the installer script directly into shasum to calculate its hash.
 SHA=$(curl -fsSL "$URL" | shasum -a 256 | awk '{print $1}')
 
 echo "Latest Commit: $COMMIT"
