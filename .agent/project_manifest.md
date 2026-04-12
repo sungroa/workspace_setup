@@ -1,27 +1,25 @@
 # Project Manifest
 
-- **Last Updated:** 2026-04-12T05:41:30Z
-- **Session ID:** 93a65826-abc0-4a4c-a4cd-1f7876326251
+- **Last Updated:** 2026-04-12T07:06:33Z
+- **Session ID:** c0220058-68d0-4162-bd66-f75777916ec1
 - **Session Health:** STABLE
-- **Context Budget:** ~10% (Turn 1)
-- **Primary Objective:** Add comprehensive documentation and comments to the repository for improved onboarding and maintenance.
+- **Context Budget:** ~10% (Turn 2)
+- **Primary Objective:** Implement persistent GPU acceleration overrides for Chrome/Flutter.
 - **STRICT_CONSTRAINTS:**
   - Do not assume `stow` is natively available on Windows without WSL/MSYS hacks.
   - Do not create Tech Debt; properly document changes.
-  - Mandatory testing via `shellcheck`.
-- **fast_validation_command:** shellcheck setup.sh setup_mac.sh setup_linux.sh setup_windows.sh setup_jetski.sh
-- **full_validation_command:** bash -n setup.sh setup_mac.sh setup_linux.sh setup_windows.sh setup_jetski.sh && ./setup.sh --dry-run
-- **Best Known State:** Repository remediated and stable. Documentation phase initiated with implementation plan.
+  - Mandatory testing via Chrome verbose GPU logging.
+- **fast_validation_command:** npx shellcheck setup.sh setup_linux.sh home/.bash_common
+- **full_validation_command:** bash -n *.sh && ./setup.sh --dry-run
+- **Best Known State:** .bash_common updated with GPU aliases. User group addition pending manual sudo.
 - **Dead Ends:**
-  - None currently.
+  - `sudo usermod` requires interactive password input; blocked in automated session.
 - **Next Steps:**
-  - Wait for user approval of the implementation plan.
-  - Create `DEVELOPMENT.md`.
-  - Add headers and comments to all shell scripts.
-  - Update dotfiles with descriptive comments.
+  - User to run `sudo usermod -aG video,render $USER`.
+  - User to refresh session via `newgrp`.
 - **Progress Tracking:**
-  - `[ ]` Create `DEVELOPMENT.md`
-  - `[ ]` Comment `setup.sh` and core OS scripts
-  - `[ ]` Comment maintenance and pinning scripts
-  - `[ ]` Update dotfiles in `home/`
-  - `[ ]` Final verification and walkthrough
+  - `[x]` Update `setup_linux.sh` and `versions.json` (Phase 1)
+  - `[x]` Update `.bash_common` (Phase 1)
+  - `[x]` Add GPU acceleration aliases to `home/.bash_common` (Phase 2)
+  - `[/]` Add user to `video` and `render` groups (Phase 2)
+  - `[ ]` Perform session refresh via `newgrp` (Phase 2)

@@ -1,4 +1,4 @@
-name: Lint and Validate Scripts
+name: Repository Validation
 
 on:
   push:
@@ -7,7 +7,8 @@ on:
     branches: [ "main", "master" ]
 
 jobs:
-  lint:
+  validate:
+    name: Lint & Verify (${{ matrix.os }})
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
@@ -42,5 +43,5 @@ jobs:
       - name: Run Syntax Check (bash -n)
         run: bash -n *.sh
         
-      - name: Run Dry-Run Verification
+      - name: Run Dry-Run Validation
         run: bash ./setup.sh --dry-run

@@ -30,6 +30,23 @@ if [[ "${1:-}" == "--dry-run" ]]; then
   for filepath in "${SCRIPT_DIR}"/home/*; do
     echo "  $(basename "$filepath")"
   done
+  
+  echo "[dry-run] Delegating to OS-specific validation..."
+  case $(uname -s) in
+    Darwin*)
+      bash "${SCRIPT_DIR}/setup_mac.sh" --dry-run
+      ;;
+    Linux*)
+      bash "${SCRIPT_DIR}/setup_linux.sh" --dry-run
+      ;;
+    MINGW*|MSYS*|CYGWIN*)
+      bash "${SCRIPT_DIR}/setup_windows.sh" --dry-run
+      ;;
+    *)
+      echo "Unsupported OS for dry-run delegation: $(uname -s)"
+      ;;
+  esac
+  
   echo "[dry-run] Validation passed."
   exit 0
 fi
@@ -38,13 +55,13 @@ fi
 # Forward all arguments (e.g., --upgrade) so OS scripts can act on them.
 case $(uname -s) in
   Darwin*)
-    "${SCRIPT_DIR}/setup_mac.sh" "$@"
+    bash "${SCRIPT_DIR}/setup_mac.sh" "$@"
     ;;
   Linux*)
-    "${SCRIPT_DIR}/setup_linux.sh" "$@"
+    bash "${SCRIPT_DIR}/setup_linux.sh" "$@"
     ;;
   MINGW*|MSYS*|CYGWIN*)
-    "${SCRIPT_DIR}/setup_windows.sh" "$@"
+    bash "${SCRIPT_DIR}/setup_windows.sh" "$@"
     ;;
   *)
     echo "Unsupported OS: $(uname -s)"

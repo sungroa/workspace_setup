@@ -16,6 +16,17 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 VERSIONS_FILE="${SCRIPT_DIR}/versions.json"
 
+# Dry-run mode: skip mutations but allow dependency/path validation.
+if [[ "${1:-}" == "--dry-run" ]]; then
+    echo "[dry-run:mac] Validating dependencies and path resolution..."
+    if [ ! -f "$VERSIONS_FILE" ]; then
+        echo "Error: versions.json not found in ${SCRIPT_DIR}"
+        exit 1
+    fi
+    echo "[dry-run:mac] Path resolution and basic dependency checks passed."
+    exit 0
+fi
+
 # Check if homebrew is already installed.
 if ! command -v brew &> /dev/null; then
     # Security Hardening: We use a specific commit hash and SHA256 sum
