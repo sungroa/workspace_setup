@@ -14,6 +14,9 @@
 # Fail on error, undefined vars, pipeline failures to prevent partial execution.
 set -euo pipefail
 
+# Resolve the directory this script lives in.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+
 # Detect available package manager to support multiple distributions.
 if command -v apt-get &> /dev/null; then
     PM="apt-get"
@@ -52,6 +55,17 @@ pkg_install() {
 
 # Export DEBIAN_FRONTEND for Debian systems to prevent prompts
 export DEBIAN_FRONTEND=noninteractive
+
+# Dry-run mode: skip mutations but allow dependency/path validation.
+if [[ "${1:-}" == "--dry-run" ]]; then
+    echo "[dry-run:linux] Validating dependencies and path resolution..."
+    if [ ! -f "${SCRIPT_DIR}/versions.json" ]; then
+        echo "Error: versions.json not found in ${SCRIPT_DIR}"
+        exit 1
+    fi
+    echo "[dry-run:linux] Path resolution and basic dependency checks passed."
+    exit 0
+fi
 
 # System update (always) + upgrade (only with --upgrade flag).
 pkg_update

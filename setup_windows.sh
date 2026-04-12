@@ -21,6 +21,18 @@ if ! command -v winget.exe &> /dev/null; then
   exit 1
 fi
 
+# Dry-run mode: skip mutations but allow dependency/path validation.
+if [[ "${1:-}" == "--dry-run" ]]; then
+    echo "[dry-run:windows] Validating dependencies and path resolution..."
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+    if [ ! -f "${SCRIPT_DIR}/versions.json" ]; then
+        echo "Error: versions.json not found in ${SCRIPT_DIR}"
+        exit 1
+    fi
+    echo "[dry-run:windows] Path resolution and basic dependency checks passed."
+    exit 0
+fi
+
 echo "Installing core utilities and runtimes..."
 # Idempotent installation strictly without prompts.
 # We iterate over a list of core packages and use versions.json if available.
@@ -60,7 +72,8 @@ RAW_PATH=$(powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "[Environm
 
 # Convert the semicolon-separated Windows path string (C:\...) to 
 # a colon-separated Unix path string (/c/...) using 'cygpath'.
-export PATH=$(cygpath -u -p "$RAW_PATH")
+NEW_PATH=$(cygpath -u -p "$RAW_PATH")
+export PATH="$NEW_PATH"
 
 echo "Installing Node utilities..."
 # Now that PATH is refreshed, attempt to install global npm packages.
