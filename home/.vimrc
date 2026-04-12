@@ -1,3 +1,6 @@
+" Managed by workspace_setup repository.
+" Configuration for the Vim text editor.
+
 syntax on
 colorscheme ron
 

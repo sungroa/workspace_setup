@@ -1,8 +1,19 @@
 #!/usr/bin/env bash
+# ==============================================================================
+# setup_jetski.sh - Global Agent Skill Configuration
+# ==============================================================================
+# This script prepares the local environment for the Antigravity/Jetski agent.
+# It performs three critical functions:
+# 1. Copies developer skills from the repo into the global agent directory.
+# 2. Authorizes these paths in the Jetski config.json via a Python helper.
+# 3. Activates the 'principal_engineer' skill globally for all sessions.
+# 4. Injects a global rule into GEMINI.md to ensure persistent execution.
+# ==============================================================================
+
 # Fail on error, undefined vars, pipeline failures to ensure robust operation.
 set -euo pipefail
 
-# Determine paths
+# Determine paths for the repository, global skills, and software configurations.
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 SKILLS_SRC="${REPO_DIR}/.agent/skills"
 GLOBAL_AGENT_DIR="${HOME}/.gemini/antigravity/skills"
@@ -19,10 +30,14 @@ if [ -d "$GLOBAL_AGENT_DIR/principal_engineer" ]; then
     echo "Backed up existing skills to $BACKUP_DIR"
 fi
 # ==============================================================================
-# ⚠️ WARNING: DO NOT USE SYMLINKS FOR AGENT SKILLS
-# The runtime environment for the agent explicitly disables following symlinks
-# for security sandboxing reasons. We MUST hard-copy (cp -rf) the skills directly.
-# Future updates during agent sessions must be ported back using sync_skills.sh!
+# ⚠️ CRITICAL WARNING: DO NOT USE SYMLINKS FOR AGENT SKILLS
+# The agent's runtime environment (Antigravity) explicitly disables following 
+# symlinks for security sandboxing purposes. This prevents the agent from 
+# traversing outside of its intended scope. 
+#
+# EFFECT: We MUST hard-copy (cp -rf) the skills directly. 
+# CONSEQUENCE: Changes made by the agent in its global directory must be 
+# manually ported back to the repo using 'sync_skills.sh'.
 # ==============================================================================
 cp -rf "$SKILLS_SRC"/* "$GLOBAL_AGENT_DIR"/
 echo "✅ Copied skills from $SKILLS_SRC to $GLOBAL_AGENT_DIR"

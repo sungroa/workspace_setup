@@ -1,3 +1,6 @@
+# Managed by workspace_setup repository.
+# Main configuration for the Zsh shell.
+
 # If not running interactively, don't do anything
 [[ $- == *i* ]] || return
 
