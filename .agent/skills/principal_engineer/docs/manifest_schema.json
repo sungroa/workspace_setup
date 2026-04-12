@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project Manifest Markdown Frontmatter Schema",
+  "description": "Validation schema for the data structures populated within project_manifest.md",
+  "type": "object",
+  "properties": {
+    "last_updated": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "session_health": {
+      "type": "string",
+      "enum": ["STABLE", "DEGRADED", "HANDOFF_PENDING", "UNKNOWN"]
+    },
+    "context_budget": {
+      "type": "string",
+      "pattern": "^~\\d+% \\(Turn \\d+\\)$"
+    },
+    "primary_objective": {
+      "type": "string"
+    },
+    "strict_constraints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "fast_validation_command": {
+      "type": "string"
+    },
+    "full_validation_command": {
+      "type": "string"
+    },
+    "best_known_state": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "dead_ends": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "enum": [" ", "x"] },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "progress_tracking": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "enum": ["x"] },
+          "description": { "type": "string" }
+        }
+      }
+    }
+  },
+  "required": [
+    "session_id",
+    "session_health",
+    "context_budget"
+  ]
+}

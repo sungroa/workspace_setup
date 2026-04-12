@@ -1,11 +1,21 @@
 # make less more friendly for non-text input files, see lesspipe(1).
 # Lesspipe provides intelligent text rendering when using `less` on binary files or archives.
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+# Lazy-load to avoid subshell fork penalty on shell startup.
+if [ -x /usr/bin/lesspipe ]; then
+    less() {
+        eval "$(SHELL=/bin/sh lesspipe)"
+        command less "$@"
+    }
+fi
 
 # Enable color support of ls and also add handy aliases.
 # `dircolors` configures semantic color values based on file types mimicking modern term capabilities.
 if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    if [ ! -f ~/.dircolors_cache ] || [ ~/.dircolors -nt ~/.dircolors_cache 2>/dev/null ]; then
+        test -r ~/.dircolors && dircolors -b ~/.dircolors > ~/.dircolors_cache || dircolors -b > ~/.dircolors_cache
+    fi
+    source ~/.dircolors_cache
+
     alias ls='ls --color=auto'
 
     alias grep='grep --color=auto'

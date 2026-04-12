@@ -1,0 +1,22 @@
+name: Verify Setup Scripts
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  lint:
+    name: ShellCheck & Syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Dependencies
+        run: sudo apt-get update && sudo apt-get install -y shellcheck jq
+      - name: Static Analysis
+        run: |
+          bash -n *.sh
+          shellcheck *.sh
+      - name: Execute Dry Run
+        run: ./setup.sh --dry-run

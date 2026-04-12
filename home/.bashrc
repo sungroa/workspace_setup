@@ -23,8 +23,12 @@ if ! shopt -oq posix; then
     . /usr/share/bash-completion/bash_completion
   elif [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
-  elif command -v brew &> /dev/null && [ -f "$(brew --prefix)/etc/profile.d/bash_completion.sh" ]; then
-    . "$(brew --prefix)/etc/profile.d/bash_completion.sh"
+  # Use static paths instead of expensive `brew --prefix` subshell (~100ms savings).
+  # Homebrew prefix is /opt/homebrew on Apple Silicon, /usr/local on Intel — never changes.
+  elif [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
+    . /opt/homebrew/etc/profile.d/bash_completion.sh
+  elif [ -f /usr/local/etc/profile.d/bash_completion.sh ]; then
+    . /usr/local/etc/profile.d/bash_completion.sh
   fi
 fi
 

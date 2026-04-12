@@ -7,9 +7,19 @@
 A subagent is considered "stalled" if you poll its status and it remains `running` over multiple extended periods with zero new output, or if it asks infinite clarification questions without making progress.
 
 **Action Steps:**
-1. **Heartbeat Check (Silent Execution Detection)**: Before termination, attempt to verify if the subagent is executing without providing terminal feedback. Instruct the subagent to output its current status to a confirmed writable location within the workspace (e.g., `write_to_file` a timestamp to `.agent/subagent_status.txt`). Check this file via `view_file`. Make sure to not use suffix in .gitignore.
+1. **Heartbeat Check (Silent Execution Detection)**: Before termination, attempt to verify if the subagent is executing without providing terminal feedback. Instruct the subagent to output its current status to a confirmed writable location within the workspace (e.g., `write_to_file` a timestamp to `.agent/subagent_status.txt`). Check this file via `view_file`. This path is gitignored to prevent transient agent state from polluting the repository.
    - **If File Exists/Updated**: The subagent is alive but "blind" or non-reporting. Adjust your next instructions to mandate file-based status updates.
    - **If No File/No Update**: Proceed to termination.
+
+### 1.1 Invisible Completion Verification
+
+If a command was started via `run_command` and remains in a non-reporting "RUNNING" state:
+- **Process Check**: Run `pgrep -af <command_name>` or `ps -aux | grep <command_name>` to see if the process actually exists in the OS process table.
+- **Side-Effect Check**: Run `ls -lrt` in the suspected output directory. If the modification timestamp of a target file has stopped advancing or matches the expected completion time, the command is likely finished or stuck.
+- **Marker Check**: If you followed the "Done Marker" protocol, check for the existence of `.agent/cmd_done`.
+
+**Action Step**: If the process is GONE from the process table but `command_status` still says "RUNNING", treat the command as **FINISHED** and proceed to verification of its expected outputs.
+
 2. **Terminate**: Halt the stalled subagent immediately to prevent token bloat.
 3. **Diagnose**: Check the last known tool output. Was it waiting for user input? Did it encounter an interactive prompt (e.g., `Do you want to continue? [Y/n]`)?
 4. **Relaunch with Constraints**: Start a new subagent with *highly targeted* instructions. Include specific commands to bypass interactive prompts (e.g., use `-y` or `yes |`).
