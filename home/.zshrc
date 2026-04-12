@@ -24,14 +24,46 @@ bindkey -v
 bindkey '^R' history-incremental-search-backward
 
 NEWLINE=$'\n'
-git_prompt_component() {
-  if ! command -v git &> /dev/null; then return; fi
-  local BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-  if [[ -n "${BRANCH}" ]]; then
-    echo "| %F{yellow}git:(${BRANCH})%f"
-  fi
+# Enable native Zsh completion system with caching to minimize startup overhead.
+autoload -Uz compinit
+if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
+    compinit
+else
+    compinit -C
+fi
+
+# Minimal Async Git Prompt (Zero Bloat)
+git_prompt_cache="/tmp/.zsh_git_prompt_$$"
+
+_update_git_prompt() {
+    (
+        branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+        if [[ -n "$branch" ]]; then
+            echo "| %F{yellow}git:($branch)%f" > "$git_prompt_cache"
+        else
+            echo "" > "$git_prompt_cache"
+        fi
+        kill -s USR1 $$
+    ) &!
 }
-PS1='${NEWLINE}%F{red}%D{%L:%M:%S %p %A %Y-%m-%d}%f | %F{5}%n@%m%f $(git_prompt_component)${NEWLINE}%F{green}%~%f${NEWLINE}$ '
+
+TRAPUSR1() {
+    ASYNC_GIT_INFO="$(cat "$git_prompt_cache" 2>/dev/null)"
+    zle && zle reset-prompt
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _update_git_prompt
+ASYNC_GIT_INFO=""
+
+PS1='${NEWLINE}%F{red}%D{%L:%M:%S %p %A %Y-%m-%d}%f | %F{5}%n@%m%f ${ASYNC_GIT_INFO}${NEWLINE}%F{green}%~%f${NEWLINE}$ '
+
+# Added to give ssh access to my git repos seamlessly.
+# Keychain manages the ssh-agent instance per-system rather than per-shell,
+# asking for passphrase only once upon reboot.
+if command -v keychain &> /dev/null; then
+    eval "$(keychain --eval github_ssh_key -q)"
+fi
 
 if [ -f ~/.bash_common ]; then
    source ~/.bash_common

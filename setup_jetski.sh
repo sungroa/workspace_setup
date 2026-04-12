@@ -12,8 +12,18 @@ echo "Configuring Antigravity/Jetski for global skill access via file copy..."
 
 # 1. Create global directory and copy skills (overwriting existing)
 mkdir -p "$GLOBAL_AGENT_DIR"
-# Copy all skill folders from the repository to the global directory.
-# We use copy instead of symlink because symlinks are not supported for skills in this environment.
+# Back up existing state to prevent destructive action data loss
+if [ -d "$GLOBAL_AGENT_DIR/principal_engineer" ]; then
+    BACKUP_DIR="${GLOBAL_AGENT_DIR}.bak.$(date +%s)"
+    cp -r "$GLOBAL_AGENT_DIR" "$BACKUP_DIR" 2>/dev/null || true
+    echo "Backed up existing skills to $BACKUP_DIR"
+fi
+# ==============================================================================
+# ⚠️ WARNING: DO NOT USE SYMLINKS FOR AGENT SKILLS
+# The runtime environment for the agent explicitly disables following symlinks
+# for security sandboxing reasons. We MUST hard-copy (cp -rf) the skills directly.
+# Future updates during agent sessions must be ported back using sync_skills.sh!
+# ==============================================================================
 cp -rf "$SKILLS_SRC"/* "$GLOBAL_AGENT_DIR"/
 echo "✅ Copied skills from $SKILLS_SRC to $GLOBAL_AGENT_DIR"
 
@@ -30,7 +40,7 @@ skill_file = os.path.expanduser("$GLOBAL_AGENT_DIR/principal_engineer/SKILL.md")
 with open(config_path, 'r+') as f:
     try:
         data = json.load(f)
-    except:
+    except (json.JSONDecodeError, ValueError):
         data = {"authorized_paths": [], "global_skills": []}
     
     # Ensure keys exist

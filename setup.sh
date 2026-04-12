@@ -3,16 +3,36 @@
 # This ensures fail-fast behavior.
 set -euo pipefail
 
+# Resolve the directory this script lives in, so sibling scripts can be called
+# regardless of the caller's working directory.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Dry-run mode: validate the script can parse and detect the OS without mutating state.
+# Referenced by the manifest's full_validation_command.
+if [[ "${1:-}" == "--dry-run" ]]; then
+  echo "[dry-run] OS detected: $(uname -s)"
+  echo "[dry-run] Script directory: ${SCRIPT_DIR}"
+  echo "[dry-run] Would install OS-specific packages and deploy dotfiles to ${HOME}"
+  echo "[dry-run] Dotfiles to deploy:"
+  shopt -s dotglob nullglob
+  for filepath in "${SCRIPT_DIR}"/home/*; do
+    echo "  $(basename "$filepath")"
+  done
+  echo "[dry-run] Validation passed."
+  exit 0
+fi
+
 # Delegate to the appropriate OS-specific setup script based on the kernel name.
+# Forward all arguments (e.g., --upgrade) so OS scripts can act on them.
 case $(uname -s) in
   Darwin*)
-    ./setup_mac.sh
+    "${SCRIPT_DIR}/setup_mac.sh" "$@"
     ;;
   Linux*)
-    ./setup_linux.sh
+    "${SCRIPT_DIR}/setup_linux.sh" "$@"
     ;;
   MINGW*|MSYS*|CYGWIN*)
-    ./setup_windows.sh
+    "${SCRIPT_DIR}/setup_windows.sh" "$@"
     ;;
   *)
     echo "Unsupported OS: $(uname -s)"
@@ -25,11 +45,17 @@ esac
 # to proactively move any existing real files in $HOME out of the way. 
 # GNU Stow will fail if it tries to symlink over a real file, so this ensures idempotency.
 shopt -s dotglob nullglob
-for filepath in home/*; do
+BACKUP_DIR=""
+for filepath in "${SCRIPT_DIR}"/home/*; do
   f=$(basename "$filepath")
   if [ -e "$HOME/$f" ] && [ ! -L "$HOME/$f" ]; then
-    echo "Backing up $HOME/$f to $HOME/$f.bak"
-    mv "$HOME/$f" "$HOME/$f.bak"
+    if [ -z "$BACKUP_DIR" ]; then
+      BACKUP_DIR="${HOME}/.dotfiles_backup.$(date +%Y%m%d_%H%M%S)"
+      mkdir -p "$BACKUP_DIR"
+      echo "Detected file collisions. Creating backup directory: $BACKUP_DIR"
+    fi
+    echo "Backing up $HOME/$f to $BACKUP_DIR/$f"
+    mv "$HOME/$f" "$BACKUP_DIR/$f"
   fi
 done
 
@@ -49,12 +75,13 @@ fi
 # If stow is not natively available (common on Windows without specific builds),
 # we fall back to standard `ln -snf` logic to achieve parity.
 if command -v stow &> /dev/null; then
-  stow -v -t ~ home
+  stow -v -d "${SCRIPT_DIR}" -t ~ home
 else
   echo "GNU Stow not found! Using standard 'ln -snf' fallback..."
-  for filepath in home/*; do
+  for filepath in "${SCRIPT_DIR}"/home/*; do
     f=$(basename "$filepath")
-    ln -snf "$(pwd)/home/$f" "$HOME/$f"
-    echo "Linked $HOME/$f -> $(pwd)/home/$f"
+    ln -snf "${SCRIPT_DIR}/home/$f" "$HOME/$f"
+    echo "Linked $HOME/$f -> ${SCRIPT_DIR}/home/$f"
   done
 fi
+

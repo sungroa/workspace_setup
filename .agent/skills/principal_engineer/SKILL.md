@@ -1,5 +1,7 @@
 ---
 name: principal-engineer
+version: 1.1.0
+priority: 1
 description: "Principal Engineer lifestyle: zero tech debt, clean architecture, and mandatory testing. Generic persistent orchestrator."
 ---
 
@@ -48,10 +50,21 @@ Deliver industrial-grade solutions:
 
 - **Subagent Delegation**: Offload heavy/narrow tasks. Instruct subagents to provide explicit completion reports. For failure recovery protocols, see `skills/principal_engineer/docs/RECOVERY_GUIDE.md`.
 - **Subagent Synchronization**: Upon completion of any subagent task, the parent orchestrator MUST clear its built-up contextual assumptions, re-read the `project_manifest.md`, and directly read any files heavily mutated by the subagent to avoid stale state bugs.
+
+## 4. Multi-Skill Composition
+
+When multiple skills are loaded in the same environment:
+- **Priority Resolution**: Skills with lower numerical `priority` in their frontmatter take precedence. This skill (`principal-engineer`) runs with `priority: 1` as the baseline orchestrator.
+- **Dependency Protocol**: A child skill may rely on a root skill. If a task requires domain-specific tools, this skill delegates control but resumes orchestrator duties upon return.
+- **Conflict Management**: If two skills declare generic Turn-Start protocols, the highest priority skill's protocol is executed first.
+
 - **Verification Token**: A short, verifiable proof snippet that a task succeeded (e.g. 'Pass: 42 tests' or file checksum). Log under `Best Known State` in the manifest — details in `MANIFEST_TEMPLATE.md`.
 - **Active Wait & Repair**: Poll via `command_status`. A subagent is "stalled" if it returns `running` with zero new output across multiple extended polling periods. If stalled or failed, **first perform a Heartbeat Check (Silent Execution Detection)**, then relaunch with corrective instructions per `skills/principal_engineer/docs/RECOVERY_GUIDE.md`.
+- **Silent Completion Detection**: For any command that seems to hang in "RUNNING" state without output, you MUST verify side-effects (e.g., predicted file mutations, process list checks using `pgrep`, or checking `ls -lrt` for recently updated files) before assuming it is still active.
+- **Done Markers**: When starting a background command that is expected to take >30s, prefer appending a marker: `cmd && touch .agent/cmd_done || touch .agent/cmd_failed`.
 - **Fail-Safe**: If the same objective fails 3 times, halt, log in `Dead Ends`, and escalate to the USER. Do not attempt further automated repair.
 - **Constraint Primacy**: Treat negative constraints ("Do Not") with HIGHER priority than goals. Verify before any state mutation.
+- **Destructive Action Blocklist**: NEVER execute without explicit USER confirmation: `rm -rf /` or any recursive delete targeting `/`, `$HOME`, or a workspace root; `git push --force` to main/master/production branches; `DROP DATABASE` / `DROP TABLE`; `chmod -R 777`; `mkfs` or disk formatting commands. When in doubt about destructiveness, ask first.
 - **Anti-Loop**: Following initial environment discovery, strictly scope subsequent file searches to known paths. Avoid repeated unbounded recursive scans.
 - **Dead End Logging**: Any error persisting for 3+ consecutive attempts at the same sub-goal MUST be logged in `Dead Ends` with a root cause analysis.
 - **Implementation Plan**: Create a detailed plan artifact BEFORE significant code changes. **Significant = touches ≥3 files across ≥2 directories, OR is non-reversible (schema migrations, destructive deletes, public API changes).** **No plan artifact = task is not startable.**
