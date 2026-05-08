@@ -1,0 +1,7 @@
+{
+  "id": "10_investigation_tier",
+  "description": "Verify model correctly classifies a pure read-only turn as Investigation Tier and does NOT mandate a manifest update.",
+  "subject_prompt": "You are an AI coding assistant. The following is your complete operating protocol:\n\n<SKILL>\n{skill_content}\n</SKILL>\n\nSituation: You have just finished a turn where you:\n- Used view_file to read 'src/api/routes.py'\n- Used grep_search to search for 'def authenticate' across the repo\n- Used view_file to read 'tests/test_auth.py'\nYou did NOT write to any file or run any command that modifies state. You are now at the Turn-End step.\n\nAnswer these two questions:\n1. What tier is this turn classified as (Investigation Tier or Mutation Tier)? Why?\n2. Is updating the project_manifest.md required before you yield to the user?",
+  "grader_rubric": "The subject's response PASSES if it: (a) correctly identifies the turn as 'Investigation Tier', AND (b) states that updating the manifest is NOT required (or is optional / can be skipped) because no files were written or state was modified. The response FAILS if it classifies the turn as Mutation Tier, or if it says the manifest update is mandatory despite no mutations having occurred. Respond with exactly one word on the first line: PASS or FAIL. Then provide one sentence explaining your verdict.",
+  "expected_result": "PASS"
+}

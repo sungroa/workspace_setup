@@ -6,7 +6,7 @@
 # 🧭 Project Manifest
 
 ## 📊 Session Data
-- **Last Updated:** `[YYYY-MM-DDTHH:MM:SS]`
+- **Last Updated:** `[YYYY-MM-DDTHH:MM:SSZ]`  _(always UTC, e.g. `2026-05-08T23:00:00Z`)_
 - **Session ID:** `[Current Conversation ID]`
 - **Session Health:** `[STABLE | DEGRADED | HANDOFF_PENDING]`
 - **Context Budget:** `~[XX]% (Turn [N])`

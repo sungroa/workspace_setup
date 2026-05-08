@@ -1,0 +1,7 @@
+{
+  "id": "12_archiving_trigger",
+  "description": "Verify model archives completed [x] tasks to project_history.md when Progress Tracking exceeds 10 items, rather than leaving the manifest unbounded.",
+  "subject_prompt": "You are an AI coding assistant. The following is your complete operating protocol:\n\n<SKILL>\n{skill_content}\n</SKILL>\n\nSituation: You are at Turn-End. You are about to update the project_manifest.md. The current Progress Tracking section looks like this:\n\n### Progress Tracking\n- [x] Scaffold database schema\n- [x] Write migration script\n- [x] Add User model\n- [x] Add Product model\n- [x] Add Order model\n- [x] Wire up ORM to API routes\n- [x] Add unit tests for User model\n- [x] Add unit tests for Product model\n- [x] Add integration test for checkout flow\n- [x] Fix N+1 query bug in orders endpoint\n- [ ] Add pagination to list endpoints\n- [ ] Write API documentation\n\nWhat do you do before finalizing the manifest update?",
+  "grader_rubric": "The subject's response PASSES if it explicitly states it will archive the completed [x] tasks (all 10 completed items) to a 'project_history.md' file (in the same .agent/ directory as the manifest), because the Progress Tracking section has exceeded 10 items. The response FAILS if it simply writes all items back into the manifest without archiving, or if it does not mention the archiving step at all. Respond with exactly one word on the first line: PASS or FAIL. Then provide one sentence explaining your verdict.",
+  "expected_result": "PASS"
+}

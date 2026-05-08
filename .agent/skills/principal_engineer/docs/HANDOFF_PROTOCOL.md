@@ -23,15 +23,16 @@ When crossing the 🟠 HANDOFF READY threshold, prepare the following in the man
 ## 🔄 Handoff Prompt — Copy & Paste Into New Thread
 
 > I'm continuing work from a previous session. Please read the project manifest
-> at `.agent/project_manifest.md` in workspace `<WORKSPACE_PATH>` and resume
-> from the `Handoff Payload` section.
+> at `<MANIFEST_PATH>` (absolute path) and resume from the `Handoff Payload` section.
 >
 > **Previous Session ID:** <SESSION_ID>
+> **Workspace Root:** <WORKSPACE_PATH>
+> **Manifest Path:** <MANIFEST_PATH>  _(e.g. `/home/user/myproject/.agent/project_manifest.md`)_
 > **Primary Objective:** <OBJECTIVE>
 > **Current State:** <1-2 sentence summary>
 > **Immediate Next Step:** <first item from Next Steps>
 >
-> Start by reading the manifest and validating the project state.
+> Start by reading the manifest at the path above, then run the `fast_validation_command`.
 ```
 
 4. **Alert the user** with a clear message:
