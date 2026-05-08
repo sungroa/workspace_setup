@@ -1,21 +1,19 @@
 # Workspace Setup
 
-This repository contains my personal dotfiles and setup scripts. It uses **GNU Stow** to manage the dotfiles through symlinking.
+Personal dotfiles and cross-platform setup scripts, managed with **GNU Stow**. A single `./setup.sh` call installs dependencies and symlinks all dotfiles into `$HOME`.
+
+## How It Works
+
+1. **OS Detection** — `setup.sh` identifies Linux / macOS / Windows (Git Bash).
+2. **Infrastructure** — the OS-specific script installs package managers, runtimes, and pinned tool versions from `versions.json`.
+3. **Conflict Resolution** — existing files are backed up before Stow runs, preventing symlink collisions.
+4. **Dotfile Deployment** — GNU Stow creates symlinks from `home/` → `$HOME` (falls back to `ln -snf` when Stow is unavailable).
+5. **Agent Skills** — `setup_jetski.sh` installs the custom AI agent skills from `.agent/skills/` into the global agent directory.
 
 > [!TIP]
-> **New Contributors**: Please read [DEVELOPMENT.md](file:///home/sungroa/git/workspace_setup/DEVELOPMENT.md) for a detailed look at the architecture, troubleshooting, and dependency management.
+> See [DEVELOPMENT.md](DEVELOPMENT.md) for architecture details, dependency pinning, agent skill maintenance, and troubleshooting.
 
-## How it Works
-
-The setup process follows a tiered approach:
-1.  **Environment Detection**: `setup.sh` identifies the operating system.
-2.  **Infrastructure Provisioning**: OS-specific scripts (`setup_linux.sh`, etc.) install required package managers and runtimes.
-3.  **Conflict Resolution**: Existing dotfiles are backed up to prevent `stow` collisions.
-4.  **Dotfile Deployment**: GNU Stow creates symbolic links from the `home/` directory to your `~` directory.
-
-## Setup Instructions
-
-Simply clone the repository and run the setup script. This will install dependencies (including stow) and deploy the dotfiles to your home directory.
+## Quick Start
 
 ```bash
 git clone <repository_url> workspace_setup
@@ -23,15 +21,38 @@ cd workspace_setup
 ./setup.sh
 ```
 
-## Adding or Modifying Dotfiles
+## Managing Dotfiles
 
-Since `stow` symlinks the files from this repository directly into your `~` (Home) directory, any changes you make to your dotfiles (e.g., editing `~/.bashrc`) are actually editing the files *in this repository*. 
+Because Stow creates real symlinks, editing a file in `$HOME` (e.g. `~/.bashrc`) **edits the file in this repo directly**. Just commit the change:
 
-1. Edit your dotfile (e.g. `vim ~/.bashrc`).
-2. Navigate to this repository: `cd ~/git/workspace_setup`
-3. Commit and push: `git commit -am "Updated bashrc" && git push`
+```bash
+# Edit via your normal workflow, then commit
+cd ~/git/workspace_setup
+git commit -am "Updated bashrc" && git push
+```
 
-To add a entirely **new** dotfile:
-1. Move the file into the `home/` directory in this repository (e.g. `mv ~/.newdotfile ~/git/workspace_setup/home/`).
-2. Run stow to create the symlink: `cd ~/git/workspace_setup && stow -v -t ~ home`
-3. Commit the new file.
+**To add a new dotfile:**
+
+```bash
+mv ~/.newdotfile ~/git/workspace_setup/home/
+cd ~/git/workspace_setup
+stow -v -t ~ home          # create the symlink
+git add home/.newdotfile && git commit -m "Add .newdotfile"
+```
+
+## Repository Layout
+
+```
+workspace_setup/
+├── home/               # Dotfile source of truth — stowed to $HOME
+├── .agent/
+│   └── skills/         # Custom AI agent skills (see DEVELOPMENT.md)
+├── setup.sh            # Main entry point
+├── setup_linux.sh      # Linux-specific provisioning
+├── setup_mac.sh        # macOS-specific provisioning
+├── setup_windows.sh    # Windows (Git Bash) provisioning
+├── setup_jetski.sh     # Installs agent skills into the global agent dir
+├── sync_skills.sh      # Copies skill changes back from global dir → repo
+├── versions.json       # Pinned dependency versions (all platforms)
+└── cleanup_backups.sh  # Removes old $HOME backup directories
+```

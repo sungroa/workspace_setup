@@ -18,11 +18,18 @@ Each test scenario:
 
 ## Prerequisites
 
+The setup scripts create `~/.agent-venv` with the required dependency automatically. To set it up manually:
+
 ```bash
-pip install google-generativeai
+python3 -m venv ~/.agent-venv
+~/.agent-venv/bin/pip install google-generativeai
 ```
 
-Get a free API key at **https://aistudio.google.com/app/apikey**
+Get a free API key at **https://aistudio.google.com/app/apikey** and export it:
+
+```bash
+export GEMINI_API_KEY="your-key-here"
+```
 
 Required API access: **Gemini API** (`generativelanguage.googleapis.com`) only.
 No Google Cloud project or billing required for the free tier.
@@ -30,25 +37,22 @@ No Google Cloud project or billing required for the free tier.
 ## Running Tests
 
 ```bash
-# Set your API key
-export GEMINI_API_KEY="your-key-here"
+# Run all 12 scenarios
+~/.agent-venv/bin/python3 tests/run_tests.py
 
-# Run all 8 tests
-python3 tests/run_tests.py
-
-# Run a single scenario
-python3 tests/run_tests.py --scenario 01_turn_start
+# Run a single scenario by id or filename prefix
+~/.agent-venv/bin/python3 tests/run_tests.py --scenario 01_turn_start
 
 # Verbose mode (shows full subject + grader responses)
-python3 tests/run_tests.py --verbose
+~/.agent-venv/bin/python3 tests/run_tests.py --verbose
 ```
 
 Expected output when all pass:
 ```
-✅ All 8 tests passed.
+✅ All 12 tests passed.
 ```
 
-Estimated cost: **~$0.01 per full run** (all 8 scenarios) at pay-as-you-go rates.
+Estimated cost: **~$0.01–$0.02 per full run** (12 scenarios) at pay-as-you-go rates.
 The free tier (rate-limited) is sufficient for development use.
 
 ## Scenarios
@@ -63,6 +67,10 @@ The free tier (rate-limited) is sufficient for development use.
 | `06_dead_end_halt.json` | Halts and escalates after 3 consecutive failures |
 | `07_constraint_primacy.json` | Constraints override goals — asks user before destructive action |
 | `08_rollback_safety.json` | Uses per-file `git checkout HEAD -- <files>` instead of `git checkout .` |
+| `09_plan_gate.json` | Refuses to write code without a plan artifact when ≥3 files across ≥2 dirs |
+| `10_investigation_tier.json` | Correctly skips manifest update on pure read-only (Investigation Tier) turns |
+| `11_subagent_stall.json` | Performs Heartbeat Check before terminating a stalled subagent |
+| `12_archiving_trigger.json` | Archives completed `[x]` tasks to `project_history.md` when Progress Tracking exceeds 10 items |
 
 ## Adding New Scenarios
 
@@ -70,7 +78,7 @@ Create a new JSON file in `tests/scenarios/` following this schema:
 
 ```jsonc
 {
-  "id": "09_your_scenario_name",
+  "id": "13_your_scenario_name",
   "description": "One sentence describing what behavior this tests.",
   "subject_prompt": "...(include {skill_content} placeholder for SKILL.md injection)...",
   "grader_rubric": "...precise PASS/FAIL criteria. Tell the grader to respond with PASS or FAIL on the first line...",
@@ -78,4 +86,4 @@ Create a new JSON file in `tests/scenarios/` following this schema:
 }
 ```
 
-File names are sorted alphabetically, so prefix with a two-digit number to control order.
+File names are sorted alphabetically, so prefix with a two-digit number to control run order.

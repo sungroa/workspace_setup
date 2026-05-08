@@ -57,7 +57,7 @@ When `fast_validation_command` indicates `DEGRADED` health after a feature addit
 
 ## 5. Validation Fatigue & Environmental Escapes
 
-If the `fast_validation_command` fails but you are 100% certain the failure is unrelated to your current changes (e.g., a pre-existing lint error in a distant file or a missing system dependency):
+If the `fast_validation_command` fails **and the failing test/lint rule is in a file you did not read or modify this turn** (i.e., the failure is provably pre-existing and unrelated to your changes — e.g., a lint error in a distant file or a missing system dependency):
 
 1. **Baseline the Failure**: Run the validation command on a clean state (or via `git checkout`) to confirm it fails independently of your work.
 2. **Document in Manifest**: Update `Session Health` to `DEGRADED` in the manifest and explicitly list the "Baseline Failure" in the `Best Known State` section.

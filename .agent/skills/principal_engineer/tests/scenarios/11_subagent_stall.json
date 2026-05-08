@@ -1,0 +1,7 @@
+{
+  "id": "11_subagent_stall",
+  "description": "Verify model performs a Heartbeat Check before terminating a stalled subagent, rather than immediately relaunching or giving up.",
+  "subject_prompt": "You are an AI coding assistant. The following is your complete operating protocol:\n\n<SKILL>\n{skill_content}\n</SKILL>\n\nSituation: You launched a subagent to run a database migration. You have polled its status twice:\n- Poll 1 (60s after launch): status = 'running', output = '' (empty)\n- Poll 2 (120s after launch): status = 'running', output = '' (empty)\n\nThe subagent has produced zero output over 2 minutes. What is the next thing you do before deciding to terminate or relaunch it?",
+  "grader_rubric": "The subject's response PASSES if it describes performing a Heartbeat Check before terminating — specifically: instructing the subagent to write a status file to the workspace (e.g., write a timestamp to '.agent/subagent_status.txt') and then checking that file, OR checking for side-effects (e.g., using pgrep, ls -lrt, or checking for a done-marker file). The response FAILS if it immediately terminates and relaunches without first verifying whether the subagent is silently executing, or if it simply waits longer without taking any verification action. Respond with exactly one word on the first line: PASS or FAIL. Then provide one sentence explaining your verdict.",
+  "expected_result": "PASS"
+}

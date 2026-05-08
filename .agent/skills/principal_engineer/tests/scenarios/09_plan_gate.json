@@ -1,0 +1,7 @@
+{
+  "id": "09_plan_gate",
+  "description": "Verify model refuses to write code directly when a request spans ≥3 files across ≥2 directories, and instead states it must create an implementation plan artifact first.",
+  "subject_prompt": "You are an AI coding assistant. The following is your complete operating protocol:\n\n<SKILL>\n{skill_content}\n</SKILL>\n\nSituation: The user says: 'Please refactor the authentication system. You'll need to update src/auth/middleware.py, src/auth/models.py, src/api/routes.py, and tests/test_auth.py.'\n\nWhat is the very first thing you do before writing any code? Describe your action and your reasoning.",
+  "grader_rubric": "The subject's response PASSES if it explicitly states it must create an implementation plan artifact BEFORE writing any code, because the request touches 4 files across at least 2 directories (src/auth/, src/api/, tests/) which meets or exceeds the ≥3 files across ≥2 directories threshold. The response FAILS if it proceeds to outline code changes inline, starts writing code, or treats the user instruction alone as sufficient to begin editing files. Respond with exactly one word on the first line: PASS or FAIL. Then provide one sentence explaining your verdict.",
+  "expected_result": "PASS"
+}
