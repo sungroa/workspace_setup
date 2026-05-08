@@ -39,3 +39,11 @@ set -o vi
 if [ -z "$DISPLAY" ]; then
     export DISPLAY=:0
 fi
+
+# Load machine-local secrets (API keys, tokens, etc.).
+# This file is gitignored and MUST NOT be committed to the repository.
+# Created automatically by setup.sh — edit ~/.bash_secrets to add your keys.
+if [ -f ~/.bash_secrets ]; then
+    # shellcheck source=/dev/null
+    . ~/.bash_secrets
+fi

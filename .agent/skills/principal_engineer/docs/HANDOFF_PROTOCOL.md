@@ -44,6 +44,8 @@ When a conversation **starts** with a handoff prompt (or the manifest contains `
 2. Read all files listed under `Critical Files`.
 3. Run the `validation_command` to verify project state.
 4. Update `Session ID` to the current conversation ID.
-5. Set `Session Health` to `STABLE` (or `DEGRADED` if validation fails).
+5. Set `Session Health` based on step 3's result:
+   - **Validation passed** → set to `STABLE`.
+   - **Validation failed** → set to `DEGRADED`. Do NOT mark `STABLE` before validation passes.
 6. Remove or archive the `Handoff Payload` section.
 7. Begin work from `Next Steps`.

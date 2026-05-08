@@ -3,6 +3,7 @@
   "title": "Project Manifest Markdown Frontmatter Schema",
   "description": "Validation schema for the data structures populated within project_manifest.md",
   "type": "object",
+  "additionalProperties": false,
   "properties": {
     "last_updated": {
       "type": "string",
@@ -47,7 +48,7 @@
       "items": {
         "type": "object",
         "properties": {
-          "status": { "type": "string", "enum": [" ", "x"] },
+          "status": { "type": "string", "enum": [" ", "/", "x"] },
           "description": { "type": "string" }
         }
       }
@@ -57,7 +58,7 @@
       "items": {
         "type": "object",
         "properties": {
-          "status": { "type": "string", "enum": ["x"] },
+          "status": { "type": "string", "enum": [" ", "/", "x"] },
           "description": { "type": "string" }
         }
       }

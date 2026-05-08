@@ -60,3 +60,19 @@ if [ $CHANGES_DETECTED -eq 1 ]; then
 else
     echo "✅ Agent skills are perfectly in sync."
 fi
+
+# Check that GEMINI_API_KEY is set — required by the principal_engineer test suite.
+# The key should live in ~/.bash_secrets (gitignored), not hardcoded here.
+echo ""
+if [ -z "${GEMINI_API_KEY:-}" ]; then
+    echo "⚠️  GEMINI_API_KEY is not set in the current shell."
+    echo "   The principal_engineer LLM behavioral tests will not run without it."
+    echo ""
+    echo "   To fix: add your key to ~/.bash_secrets:"
+    echo "     echo 'export GEMINI_API_KEY=\"your-key-here\"' >> ~/.bash_secrets"
+    echo "   Then reload: source ~/.bash_secrets"
+    echo "   Get/regenerate key at: https://aistudio.google.com/app/apikey"
+else
+    echo "✅ GEMINI_API_KEY is set. Run tests with:"
+    echo "   python3 .agent/skills/principal_engineer/tests/run_tests.py"
+fi

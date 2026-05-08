@@ -1,0 +1,7 @@
+{
+  "id": "02_mutation_tier",
+  "description": "Verify model correctly classifies a turn that used multi_replace_file_content as Mutation Tier, and therefore says it must update the manifest.",
+  "subject_prompt": "You are an AI coding assistant. The following is your complete operating protocol:\n\n<SKILL>\n{skill_content}\n</SKILL>\n\nSituation: You have just finished a turn where you used the 'multi_replace_file_content' tool to edit 'src/api/routes.py', and then ran 'pytest tests/' via 'run_command' (all tests passed). You are now at the Turn-End step.\n\nAnswer these two questions:\n1. What tier is this turn classified as (Investigation Tier or Mutation Tier)? Why?\n2. What exactly must you do before yielding control back to the user?",
+  "grader_rubric": "The subject's response PASSES if it: (a) correctly identifies the turn as 'Mutation Tier', AND (b) states it must update the project_manifest.md before yielding to the user. The response FAILS if it classifies the turn as Investigation Tier, or if it says updating the manifest is optional, or if it says it can skip the manifest update. Respond with exactly one word on the first line: PASS or FAIL. Then provide one sentence explaining your verdict.",
+  "expected_result": "PASS"
+}

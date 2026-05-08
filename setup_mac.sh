@@ -96,3 +96,32 @@ fi
 
 # Install essential CLI tools and fonts.
 brew install tmux vim stow fonttool keychain withgraphite/tap/graphite
+
+# Agent skill dependencies (Python packages required by .agent/skills/)
+# google-generativeai: used by the principal_engineer LLM behavioral test suite
+echo "Installing Python agent skill dependencies..."
+GENAI_VERSION=$(jq -r '.pip["google-generativeai"] // empty' "$VERSIONS_FILE" 2>/dev/null || echo "")
+if [ -n "$GENAI_VERSION" ]; then
+    pip3 install --user "google-generativeai==${GENAI_VERSION}"
+else
+    pip3 install --user google-generativeai
+fi
+echo "✅ Python agent skill dependencies installed."
+
+# Scaffold ~/.bash_secrets if it doesn't exist.
+# This file is gitignored and holds machine-local secrets (API keys, tokens).
+# It is sourced automatically by ~/.bash_common on every shell startup.
+if [ ! -f "${HOME}/.bash_secrets" ]; then
+    cat > "${HOME}/.bash_secrets" << 'SECRETS_EOF'
+# ~/.bash_secrets — Machine-local secrets. DO NOT commit to git.
+# Sourced automatically by ~/.bash_common on every shell startup.
+
+# Gemini API key — used by .agent/skills/principal_engineer/tests/run_tests.py
+# Get/regenerate at: https://aistudio.google.com/app/apikey
+export GEMINI_API_KEY="your-gemini-api-key-here"
+SECRETS_EOF
+    chmod 600 "${HOME}/.bash_secrets"
+    echo "✅ Created ~/.bash_secrets with placeholders. Edit it to add your API keys."
+else
+    echo "✅ ~/.bash_secrets already exists. Skipping scaffold."
+fi
