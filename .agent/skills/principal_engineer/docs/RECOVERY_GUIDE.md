@@ -42,8 +42,17 @@ If you find yourself repeatedly searching directories and failing to locate file
 
 When `fast_validation_command` indicates `DEGRADED` health after a feature addition:
 1. **Do not write new feature code**.
-2. Immediately restore the files modified in this specific Turn to their previous state via standard `git checkout` or by manually reverting via `replace_file_content`.
-3. Re-run `fast_validation_command`. 
+2. Identify exactly which files this turn mutated, then restore only those files:
+   ```bash
+   # Step 1: See which files this turn changed relative to HEAD
+   git diff --name-only HEAD
+   # Step 2: Restore only those specific files — one at a time
+   git checkout HEAD -- path/to/file1.py path/to/file2.py
+   ```
+   > ⛔ **Never do `git checkout .` or `git checkout HEAD -- .`** — this reverts ALL uncommitted changes across the entire repository, including unrelated work-in-progress. Always restore specific files by name.
+   >
+   > If `git` is not available, revert each file manually using `replace_file_content` with the known-good content.
+3. Re-run `fast_validation_command`.
 4. Once `STABLE` is restored, re-attempt the feature via an alternate route.
 
 ## 5. Validation Fatigue & Environmental Escapes

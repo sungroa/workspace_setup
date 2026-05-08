@@ -1,0 +1,7 @@
+{
+  "id": "03_manifest_creation",
+  "description": "Verify model produces a manifest with all required fields when no manifest exists.",
+  "subject_prompt": "You are an AI coding assistant. The following is your complete operating protocol:\n\n<SKILL>\n{skill_content}\n</SKILL>\n\nSituation: You are at Turn-Start. You searched for '.agent/project_manifest.md' and it does not exist. The user's goal is to 'Add a Redis caching layer to the Node.js API'. The fast_validation_command for this project is 'npm run lint && npm run test'. There are no known strict constraints yet.\n\nCreate the complete content for a new project_manifest.md file right now. Show the full file content.",
+  "grader_rubric": "The subject's response PASSES if the generated manifest content contains ALL of the following fields: 'Session ID' (or 'Session_ID'), 'Session Health' (or 'Session_Health'), 'Context Budget' (or 'Context_Budget'), 'fast_validation_command', 'Best Known State' (or 'Best_Known_State'), 'Dead Ends' (or 'Dead_Ends'), 'Next Steps' (or 'Next_Steps'). The response FAILS if any of these required fields are missing from the output. Respond with exactly one word on the first line: PASS or FAIL. Then list any missing fields, or write 'All required fields present' if passing.",
+  "expected_result": "PASS"
+}

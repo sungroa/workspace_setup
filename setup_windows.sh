@@ -84,4 +84,38 @@ else
     echo "Warning: npm still not found in PATH. You may need to manually restart your terminal."
 fi
 
+# Agent skill dependencies (Python packages required by .agent/skills/)
+# google-generativeai: used by the principal_engineer LLM behavioral test suite
+echo "Installing Python agent skill dependencies..."
+if command -v pip3 &> /dev/null || command -v pip &> /dev/null; then
+    PIP_CMD=$(command -v pip3 || command -v pip)
+    GENAI_VERSION=$(jq -r '.pip["google-generativeai"] // empty' "$VERSIONS_FILE" 2>/dev/null || echo "")
+    if [ -n "$GENAI_VERSION" ]; then
+        "$PIP_CMD" install "google-generativeai==${GENAI_VERSION}"
+    else
+        "$PIP_CMD" install google-generativeai
+    fi
+    echo "✅ Python agent skill dependencies installed."
+else
+    echo "Warning: pip not found. Install google-generativeai manually after Python is in PATH."
+fi
+
+# Scaffold ~/.bash_secrets if it doesn't exist.
+# This file is gitignored and holds machine-local secrets (API keys, tokens).
+# It is sourced automatically by ~/.bash_common on every shell startup.
+if [ ! -f "${HOME}/.bash_secrets" ]; then
+    cat > "${HOME}/.bash_secrets" << 'SECRETS_EOF'
+# ~/.bash_secrets — Machine-local secrets. DO NOT commit to git.
+# Sourced automatically by ~/.bash_common on every shell startup.
+
+# Gemini API key — used by .agent/skills/principal_engineer/tests/run_tests.py
+# Get/regenerate at: https://aistudio.google.com/app/apikey
+export GEMINI_API_KEY="your-gemini-api-key-here"
+SECRETS_EOF
+    chmod 600 "${HOME}/.bash_secrets"
+    echo "✅ Created ~/.bash_secrets with placeholders. Edit it to add your API keys."
+else
+    echo "✅ ~/.bash_secrets already exists. Skipping scaffold."
+fi
+
 echo "Windows setup script execution completed."

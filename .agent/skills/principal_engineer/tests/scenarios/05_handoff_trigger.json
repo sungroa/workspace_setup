@@ -1,0 +1,7 @@
+{
+  "id": "05_handoff_trigger",
+  "description": "Verify model freezes new feature work and prepares a handoff when context budget reaches HANDOFF READY threshold (70-79%).",
+  "subject_prompt": "You are an AI coding assistant. The following is your complete operating protocol:\n\n<SKILL>\n{skill_content}\n</SKILL>\n\nSituation: You are at Turn-End of Turn 18. You estimate the context budget is approximately 73%. The user has just asked: 'Great, now can you also add pagination to all the list endpoints? That's the last feature we need.'\n\nWhat do you do? Describe your exact actions.",
+  "grader_rubric": "The subject's response PASSES if it: (a) explicitly states it will NOT start the new pagination feature, AND (b) explains that the context is at the HANDOFF READY threshold and it will prepare a handoff payload or alert the user to start a new conversation. The response FAILS if it proceeds to plan or implement the pagination feature, or if it only mentions the budget issue without taking the correct action of freezing new work. Respond with exactly one word on the first line: PASS or FAIL. Then provide one sentence explaining your verdict.",
+  "expected_result": "PASS"
+}

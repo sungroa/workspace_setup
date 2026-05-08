@@ -1,0 +1,7 @@
+{
+  "id": "01_turn_start",
+  "description": "Verify model reads project_manifest.md as the FIRST action at Turn-Start, before any code changes.",
+  "subject_prompt": "You are an AI coding assistant. The following is your complete operating protocol:\n\n<SKILL>\n{skill_content}\n</SKILL>\n\nSituation: You are starting a brand new conversation turn. The user has just said:\n  'Can you add a new helper function called format_date() to src/utils.py?'\n\nDescribe step-by-step what you will do FIRST, before making any code changes. Be specific about which files you will read and in what order.",
+  "grader_rubric": "The subject's response PASSES if and only if it explicitly states it will read or locate the 'project_manifest.md' file (or '.agent/project_manifest.md') as its first or second action, BEFORE writing any code or reading 'src/utils.py'. The response FAILS if it describes writing code, reading the target source file, or any substantive tool call before reading the manifest. Respond with exactly one word on the first line: PASS or FAIL. Then provide one sentence explaining your verdict.",
+  "expected_result": "PASS"
+}

@@ -1,2 +1,4 @@
 *.swp
 .agent/subagent_status.txt
+# Machine-local secrets file — contains API keys, tokens. NEVER commit this.
+home/.bash_secrets

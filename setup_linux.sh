@@ -145,11 +145,12 @@ fi
 
 # Node.js installation via NPM/N.
 # We use 'n' to manage Node versions because it's lightweight and works well in scripts.
+# python3-pip and python3-venv are required on Ubuntu 24.04+ (PEP 668 externally-managed Python).
 if [ "$PM" == "apt-get" ]; then
-    pkg_install "$(get_pkg python-is-python3)" "$(get_pkg npm)"
+    pkg_install "$(get_pkg python-is-python3)" "$(get_pkg npm)" "$(get_pkg python3-pip)" "$(get_pkg python3-venv)"
 else
     # For dnf/pacman, assume python3/npm are available or standard names
-    pkg_install "$(get_pkg npm)" "$(get_pkg python3)"
+    pkg_install "$(get_pkg npm)" "$(get_pkg python3)" "$(get_pkg python3-pip)"
 fi
 
 # Configure 'n' to install Node in a user-local directory (~/.n)
@@ -165,6 +166,39 @@ export PATH="$N_PREFIX/bin:$PATH"
 
 # Install modern developer CLI tools
 npm i -g @withgraphite/graphite-cli@1.x.x
+
+# Agent skill dependencies (Python packages required by .agent/skills/)
+# google-generativeai: used by the principal_engineer LLM behavioral test suite.
+# Installed into a dedicated venv (~/.agent-venv) to respect PEP 668 on Ubuntu 24.04+.
+echo "Installing Python agent skill dependencies..."
+AGENT_VENV="${HOME}/.agent-venv"
+python3 -m venv "$AGENT_VENV"
+GENAI_VERSION=$(jq -r '.pip["google-generativeai"] // empty' "$VERSIONS_FILE" 2>/dev/null || echo "")
+if [ -n "$GENAI_VERSION" ]; then
+    "${AGENT_VENV}/bin/pip" install "google-generativeai==${GENAI_VERSION}"
+else
+    "${AGENT_VENV}/bin/pip" install google-generativeai
+fi
+echo "✅ Python agent skill dependencies installed into ${AGENT_VENV}."
+echo "   Run tests with: ${AGENT_VENV}/bin/python3 .agent/skills/principal_engineer/tests/run_tests.py"
+
+# Scaffold ~/.bash_secrets if it doesn't exist.
+# This file is gitignored and holds machine-local secrets (API keys, tokens).
+# It is sourced automatically by ~/.bash_common on every shell startup.
+if [ ! -f "${HOME}/.bash_secrets" ]; then
+    cat > "${HOME}/.bash_secrets" << 'SECRETS_EOF'
+# ~/.bash_secrets — Machine-local secrets. DO NOT commit to git.
+# Sourced automatically by ~/.bash_common on every shell startup.
+
+# Gemini API key — used by .agent/skills/principal_engineer/tests/run_tests.py
+# Get/regenerate at: https://aistudio.google.com/app/apikey
+export GEMINI_API_KEY="your-gemini-api-key-here"
+SECRETS_EOF
+    chmod 600 "${HOME}/.bash_secrets"
+    echo "✅ Created ~/.bash_secrets with placeholders. Edit it to add your API keys."
+else
+    echo "✅ ~/.bash_secrets already exists. Skipping scaffold."
+fi
 
 # SSH and Remote Access Tools
 SSH_PKGS=("$(get_pkg keychain)")
