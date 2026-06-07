@@ -21,6 +21,18 @@ cd workspace_setup
 ./setup.sh
 ```
 
+## Customization
+
+Before running `./setup.sh`, personalize the identity values in `home/.gitconfig`:
+
+```ini
+[user]
+    name = Your Name        # replace with your name
+    email = you@example.com # replace with your email
+```
+
+These values are stowed directly to `~/.gitconfig`. If you skip this step, every git commit on your machine will carry the repo author's identity.
+
 ## Managing Dotfiles
 
 Because Stow creates real symlinks, editing a file in `$HOME` (e.g. `~/.bashrc`) **edits the file in this repo directly**. Just commit the change:
