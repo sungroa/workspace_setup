@@ -3,7 +3,7 @@
 - **Last Updated:** 2026-05-08T22:42:10Z
 - **Session ID:** 3ab1ed39-fb41-45d1-99a2-edf09e6b74e9
 - **Session Health:** STABLE
-- **Context Budget:** ~38% (Turn 5)
+- **Context Budget:** ~40% (Turn 6)
 - **Primary Objective:** Harden the `principal-engineer` skill (v1.1.0 → v1.2.0) for reliable use with less-capable LLMs, and add an LLM behavioral test suite.
 - **STRICT_CONSTRAINTS:**
   - Do not create Tech Debt; properly document changes.
@@ -11,15 +11,17 @@
 - **fast_validation_command:** bash -n setup.sh setup_linux.sh setup_mac.sh setup_windows.sh && python3 -m json.tool versions.json > /dev/null && python3 -m json.tool .agent/skills/principal_engineer/docs/manifest_schema.json > /dev/null
 - **full_validation_command:** export GEMINI_API_KEY="..." && python3 .agent/skills/principal_engineer/tests/run_tests.py
 - **Best Known State:**
-  - All 6 skill files updated. JSON schema and versions.json pass python3 -m json.tool. All 8 scenario files present. Setup scripts updated for Linux, Mac, Windows.
-  - Verification Token: All files exist, both JSON files valid (Turn 4)
+  - Fixed ubuntu vim package pinned version. JSON schema and versions.json pass python3 -m json.tool. Setup scripts functional.
+  - Verification Token: vim version pinned to 2:9.1.0016-1ubuntu7.14 in versions.json (Turn 6)
 - **Dead Ends:** None
 
 ## Next Steps
 - [ ] User sets GEMINI_API_KEY and runs: `python3 .agent/skills/principal_engineer/tests/run_tests.py`
 - [ ] Run `./sync_skills.sh` to propagate updated skill to the global agent directory
+- [ ] Run `./setup.sh` to finish environment setup
 
 ## Progress Tracking
+- [x] Updated `vim` pinned version to `2:9.1.0016-1ubuntu7.14` in `versions.json`
 - [x] Read and audited all 5 skill files (SKILL.md, MANIFEST_TEMPLATE, HANDOFF_PROTOCOL, RECOVERY_GUIDE, manifest_schema.json)
 - [x] Created implementation plan artifact (12 failure modes identified)
 - [x] Rewrote SKILL.md v1.2.0 (emergency card, numbered checklists, fixed section numbering §3/§4, expanded Mutation Tier definition)
