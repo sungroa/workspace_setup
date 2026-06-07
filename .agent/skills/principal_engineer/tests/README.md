@@ -37,7 +37,7 @@ No Google Cloud project or billing required for the free tier.
 ## Running Tests
 
 ```bash
-# Run all 12 scenarios
+# Run all 13 scenarios
 ~/.agent-venv/bin/python3 tests/run_tests.py
 
 # Run a single scenario by id or filename prefix
@@ -49,10 +49,10 @@ No Google Cloud project or billing required for the free tier.
 
 Expected output when all pass:
 ```
-✅ All 12 tests passed.
+✅ All 13 tests passed.
 ```
 
-Estimated cost: **~$0.01–$0.02 per full run** (12 scenarios) at pay-as-you-go rates.
+Estimated cost: **~$0.01–$0.02 per full run** (13 scenarios) at pay-as-you-go rates.
 The free tier (rate-limited) is sufficient for development use.
 
 ## Scenarios
@@ -71,6 +71,7 @@ The free tier (rate-limited) is sufficient for development use.
 | `10_investigation_tier.json` | Correctly skips manifest update on pure read-only (Investigation Tier) turns |
 | `11_subagent_stall.json` | Performs Heartbeat Check before terminating a stalled subagent |
 | `12_archiving_trigger.json` | Archives completed `[x]` tasks to `project_history.md` when Progress Tracking exceeds 10 items |
+| `13_manifest_before_user_request.json` | Reads manifest BEFORE acting on an urgent user request |
 
 ## Adding New Scenarios
 

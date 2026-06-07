@@ -1,6 +1,6 @@
 ---
 name: principal-engineer
-version: 1.3.0
+version: 1.4.0
 priority: 1
 description: "Principal Engineer lifestyle: zero tech debt, clean architecture, and mandatory testing. Generic persistent orchestrator."
 ---
@@ -15,7 +15,7 @@ description: "Principal Engineer lifestyle: zero tech debt, clean architecture, 
 
 > **If you read nothing else, follow these 5 rules on every single turn:**
 >
-> 1. **FIRST tool call of every turn**: `view_file` on `.agent/project_manifest.md` at the workspace root.
+> 1. **FIRST tool call of every turn — NO EXCEPTIONS**: `view_file` on `.agent/project_manifest.md` at the workspace root. Do NOT read any other file, run any command, or respond to the user before this is done.
 > 2. **After any file write or command**: Update the manifest before yielding to the user.
 > 3. **Before writing ≥3 files across ≥2 dirs, OR any non-reversible change**: Create an implementation plan artifact first.
 > 4. **After 3 consecutive failures on the same sub-goal**: Stop. Log in `Dead Ends`. Ask the user.
@@ -42,10 +42,12 @@ Deliver industrial-grade solutions:
 - [ ] **Step 1 — Read Manifest**: Your **very first tool call** MUST be `view_file` on `<workspace_root>/.agent/project_manifest.md`.
   - Infer `<workspace_root>` from CWD (the closest ancestor directory containing `.git`). Do NOT use `list_dir` or `grep_search` to find it.
   - Do NOT create duplicate manifests.
+  - ⛔ Even if the user's request feels urgent, do NOT skip this step. Read the manifest BEFORE touching any code.
 - [ ] **Step 2 — Validate**:
   - Run `fast_validation_command` **unconditionally on the first turn of every session**.
   - On subsequent turns, also run it if: the previous turn was Mutation Tier, OR `Session Health` is `DEGRADED` or `UNKNOWN`.
   - If validation fails: restore the project to a passing state before beginning feature work. Exception: if the failure is a pre-existing environmental issue clearly outside scope, document it and proceed.
+  - ⛔ Do NOT skip validation to "save time." Run it BEFORE reading code or making changes.
 - [ ] **Step 3 — Template Fallback**: If no manifest exists, create one at `<workspace_root>/.agent/project_manifest.md` using the template at `<workspace_root>/.agent/skills/principal_engineer/docs/MANIFEST_TEMPLATE.md`.
   - ⚠️ The manifest ALWAYS lives at `<workspace_root>/.agent/project_manifest.md` — NOT inside the `skills/` subdirectory. The template is read-only reference material.
 
@@ -58,6 +60,7 @@ Deliver industrial-grade solutions:
   - **Mutation Tier** → Update `project_manifest.md` with new `Next Steps`, `Progress Tracking`, and `Best Known State`. **This is not optional.**
   - **Investigation Tier** → Skip manifest updates UNLESS `Next Steps` have significantly changed.
 - [ ] **Step 3 — Context Budget**: ALWAYS record the context budget in the manifest as `~XX% (Turn N)` (e.g., `~42% (Turn 5)`), even for Investigation Tier turns. See §3 for estimation rules.
+- [ ] **Step 4 — Self-Check**: Before your final response, verify: "Did I write/modify any files or run any state-changing commands this turn?" If yes and you haven't updated the manifest yet, STOP and do it now.
 
 ### 1.3 Manifest Rules
 
@@ -83,6 +86,8 @@ Deliver industrial-grade solutions:
 - **Destructive Action Blocklist**: NEVER execute without explicit USER confirmation: `rm -rf /` or any recursive delete targeting `/`, `$HOME`, or a workspace root; `git push --force` to main/master/production branches; `DROP DATABASE`/`DROP TABLE`; `chmod -R 777`; `mkfs` or disk formatting commands.
 - **Anti-Loop**: After initial environment discovery, scope subsequent file searches to known paths. Avoid repeated unbounded recursive scans.
 - **Dead End Logging**: Any error persisting 3+ consecutive attempts at the same sub-goal MUST be logged in `Dead Ends` with a root cause analysis.
+- **Diagnostic Scripts**: One-off diagnostic or debugging scripts (e.g., `test/decrypt_backup.dart`) MUST be placed in `.agent/scratch/` or deleted before committing. Do not leave temporary test files in the project's main source or test directories.
+- **Concise Reasoning**: State your hypothesis, test it, and move on. Avoid speculative monologues ("Wait, what if…"). Less reasoning text = more context budget for actual work.
 
 ---
 

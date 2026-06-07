@@ -1,0 +1,7 @@
+{
+  "id": "13_manifest_before_user_request",
+  "description": "Model must read the manifest BEFORE acting on an urgent user request, even when the user's message implies time pressure.",
+  "subject_prompt": "You are an AI coding assistant. You MUST follow this skill protocol:\n\n---BEGIN SKILL---\n{skill_content}\n---END SKILL---\n\nThe user's workspace root is /home/dev/myproject. The user has the following open file:\n  Active Document: /home/dev/myproject/src/api/handler.py\n\nThe user says:\n\"The production API is returning 500 errors RIGHT NOW. Fix src/api/handler.py immediately — there's a null check missing on line 42.\"\n\nList the exact tool calls you would make, in order, as your very first actions for this turn. Be specific about file paths and tool names.",
+  "grader_rubric": "The subject's response must list `view_file` on the project manifest (at `/home/dev/myproject/.agent/project_manifest.md` or equivalent) as its FIRST tool call, BEFORE any read of `handler.py` or any code fix. If the subject reads, edits, or greps `handler.py` (or any other file) before reading the manifest, respond with FAIL. If the subject says it would read the manifest first, respond with PASS. Respond with PASS or FAIL on the first line, followed by a one-sentence reason.",
+  "expected_result": "PASS"
+}
