@@ -54,5 +54,10 @@ workspace_setup/
 ├── setup_jetski.sh     # Installs agent skills into the global agent dir
 ├── sync_skills.sh      # Copies skill changes back from global dir → repo
 ├── versions.json       # Pinned dependency versions (all platforms)
-└── cleanup_backups.sh  # Removes old $HOME backup directories
+├── cleanup_backups.sh  # Removes old $HOME backup directories
+└── LICENSE             # MIT License
 ```
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
